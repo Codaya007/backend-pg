@@ -3,8 +3,7 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const routes = require('./routes/index.js');
-const { errorHandler } = require('./middlewares/index.js');
-const error404 = require('./middlewares/error404.js');
+const { errorHandler, error404 } = require('./middlewares/index.js');
 const { CORS_URL } = process.env;
 
 require('./db.js');
