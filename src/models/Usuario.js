@@ -40,6 +40,7 @@ module.exports = (sequelize, DataTypes) => {
 
     },
     rol: {
+      // 1 -> normal; 2 -> admin
       type: DataTypes.ENUM("1", "2"),
       allowNull: false,
     },
