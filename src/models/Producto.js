@@ -3,10 +3,7 @@
 module.exports = (sequelize, DataTypes) => {
   // defino el modelo
   sequelize.define('Producto', {
-    id : {
-      type: DataTypes.INTEGER,
-      primaryKey:true
-    },
+ 
     title : {
       type: DataTypes.STRING,
       allowNull: false,
@@ -17,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     description: {
       type: DataTypes.TEXT,
-      allowNull: false,
+      allowNull: true,
     }, 
     category: {
       type: DataTypes.STRING,
@@ -37,6 +34,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     cantidad: {
       type: DataTypes.INTEGER,
+      allowNull: true,
       
     },
 
