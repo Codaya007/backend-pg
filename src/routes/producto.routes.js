@@ -1,30 +1,21 @@
-const { Router }  = require('express');
-const { getAllProductos, getDetail } = require('../controllers/controllerProduct')
+const { Router } = require('express');
+const { getAllProductos, getProductoById } = require('../controllers/controllerProduct')
 const productRouter = Router();
-
-// requerimos el modelo de Producto
-const { Producto } = require('../db');
 
 // Requerimos el middleware de autenticación
 const { authentication } = require("../middlewares");
 
-// productRouter.get('/' , getAllActivities)
-productRouter.get('/:id',async(req, res, next)=>{
-    const {id} = req.params
-    if(!id){
-        next()
-    }else{
+// @route GET products/:id
+// @desc Obtener la información de un producto por id
+// @access Public
+productRouter.get('/:id', async (req, res) => {
+    const { id } = req.params;
 
-        let get = await getDetail(id)
-        res.send(get)
-    }
+    let get = await getProductoById(id);
+    res.json(get);
 
 })
 
-productRouter.get('/', getAllProductos)
-// productRouter.get('/', async(req, res)=>{
-//     let get = await getAllProductos()
-//     res.send(get)
-// })
+productRouter.get('/', getAllProductos);
 
 module.exports = productRouter;
