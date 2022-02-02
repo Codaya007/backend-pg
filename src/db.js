@@ -41,7 +41,6 @@ sequelize.models = models;
 
 // ASOCIACIONES
 const { Producto, Usuario, Categoria } = sequelize.models;
-
 // Aca vendrian las relaciones
 Producto.belongsToMany(Usuario, { through: 'CarritoCompra' });
 Usuario.belongsToMany(Producto, { through: 'CarritoCompra' });

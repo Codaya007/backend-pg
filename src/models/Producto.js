@@ -3,18 +3,22 @@
 module.exports = (sequelize, DataTypes) => {
   // defino el modelo
   sequelize.define('Producto', {
-    title: {
+    id : {
+      type: DataTypes.INTEGER,
+      primaryKey:true
+    },
+    title : {
       type: DataTypes.STRING,
       allowNull: false,
-    },
-    price: {
-      type: DataTypes.INTEGER,
-
+    }, 
+    price:{
+      type: DataTypes.FLOAT,
+      
     },
     description: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: false,
-    },
+    }, 
     category: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -23,17 +27,17 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    rate: {
-      type: DataTypes.INTEGER,
-
+    rate:{
+      type: DataTypes.FLOAT,
+      
     },
     count: {
       type: DataTypes.INTEGER,
-
+      
     },
     cantidad: {
       type: DataTypes.INTEGER,
-
+      
     },
 
   }, { timestamps: false });

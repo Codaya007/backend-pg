@@ -1,13 +1,11 @@
 
 const server = require('./src/app.js');
-const { PORT } = process.env;
 const { conn } = require('./src/db.js');
+const { PORT } = process.env;
 
 
 // Syncing all the models at once.
-conn.sync({ force: true })
-  .then(async () => {
-
+conn.sync({ force: true }).then(async () => {
     server.listen(PORT, () => {
       console.log(`Listening at port ${PORT}`);
     })

@@ -1,4 +1,5 @@
-const { Router } = require('express');
+const { Router }  = require('express');
+const { getAllProductos } = require('../controllers/controllerProduct')
 const productRouter = Router();
 
 // requerimos el modelo de Producto
@@ -8,5 +9,9 @@ const { Producto } = require('../db');
 const { authentication } = require("../middlewares");
 
 // productRouter.get('/' , getAllActivities)
+productRouter.get('/', async(req, res)=>{
+    let get = await getAllProductos()
+    res.send(get)
+})
 
-module.exports = router;
+module.exports = productRouter;
