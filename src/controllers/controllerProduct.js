@@ -9,7 +9,7 @@ const getAllProductos = async()=>{
         let getDB = await Producto.findAll()
         console.log('esto es productos',getDB.length)
         if(getDB <= 0){
-            let get = await axios.get('https://fakestoreapi.com/products')
+            let get = await axios.get(`${API}`)
             let data = get.data
           
             let showapi = await data.map((el)=>{
@@ -50,7 +50,36 @@ const getAllProductos = async()=>{
 
 }
 
+const getDetail = async(id)=>{
+    id = parseInt(id)  
+    let get = await Producto.findAll({
+        where:id
+    })
+
+    if(get.length === 1){
+
+        return get
+
+    }else{
+
+        let getApi = await axios.get(`${API}/${id}`) 
+        let data = getApi.data
+        let showapi = {
+                id:data.id,
+                title:data.title,
+                price:data.price,
+                description:data.description,
+                category:data.category,
+                image:data.image,
+                rate:data.rating.rate,
+                count:data.rating.count,
+            }
+        return showapi
+    }    
+}
+
 module.exports = { 
-    getAllProductos
+    getAllProductos,
+    getDetail
 }
     
