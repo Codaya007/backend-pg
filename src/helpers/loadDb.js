@@ -8,7 +8,6 @@ async function LoadDb() {
         title: e.title,
         price: e.price,
         description: e.description,
-        category: e.category,
         image: e.image,
         rate: e.rating.rate,
         count: e.rating.count,
