@@ -39,17 +39,7 @@ Object.keys(models).forEach(modelName => {
 
 sequelize.models = models;
 
-// ASOCIACIONES
-const { Producto, Usuario, Categoria } = sequelize.models;
-// Aca vendrian las relaciones
-Producto.belongsToMany(Usuario, { through: 'CarritoCompra' });
-Usuario.belongsToMany(Producto, { through: 'CarritoCompra' });
-
-Producto.belongsTo(Categoria, { through: 'ProductoCategoria' });
-Categoria.belongsToMany(Producto, { through: 'ProductoCategoria' });
-
-
 module.exports = {
   ...sequelize.models,
-  conn: sequelize,     // para importar la conexión { conn } = require('./db.js');
+  conn: sequelize,  // para importar la conexión { conn } = require('./db.js');
 };
