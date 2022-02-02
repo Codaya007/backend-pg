@@ -27,4 +27,41 @@ productRouter.get('/', async(req, res)=>{
     res.send(get)
 })
 
+
+// productRouter.get('/', async(req, res)=>{
+//     const { name } = req.query;
+  
+//     try {
+//       if (!name) {
+//         const ProductAll = await Producto.findAll;
+//         res.send(ProductAll);
+//       } else {
+//         const ProductQuery = await Producto.findAll({
+//           where: {
+//             name: {
+//               [Op.iLike]: `%${name}%`
+//             }
+//           }
+//         });
+  
+//         if (!ProductQuery[0]) {
+//           console.log("error");
+  
+//           return res
+//             .status(404)
+//             .json({
+//               error: ` no se encuentra ningun Pais con el nombre , ${name}`,
+//             });
+//         }
+//         return res.send(ProductQuery);
+//       }
+//     } catch (error) {
+//       res.send(error);
+//     }
+//   })
+  
+
+  
+
+
 module.exports = productRouter;
