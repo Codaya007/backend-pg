@@ -1,6 +1,6 @@
 const { Sequelize } = require("sequelize");
 const Op = Sequelize.Op;
-const { Producto, Categoria } = require('../db')
+const { Producto } = require('../db')
 
 async function getAllProductos(req, res) {
   const { title } = req.query;
