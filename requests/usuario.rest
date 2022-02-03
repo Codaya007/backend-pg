@@ -1,5 +1,5 @@
 ###
-@baseUrl = http://localhost:5000/user
+@baseUrl = http://localhost:3001/user
 
 ### REGISTRO DE USUARIOS  POST user/register
 POST {{baseUrl}}/register HTTP/1.1 
@@ -11,6 +11,21 @@ Content-Type: application/json
    "contrasena": "mysecretpassword",
    "email": "vivicalva@gmail.com", 
    "pais": "Ecuador", 
+   "provincia": "Loja", 
+   "direccion": "Av. Amazonica y Felipe Muñoz", 
+   "telefono": "0921827178"
+}
+
+### ACTUALIZAR USUARIO PUT /updateUser
+PUT {{baseUrl}}/updateUser HTTP/1.1 
+Content-Type: application/json
+
+{  "id":1, 
+   "nombre": "Vivi",
+   "usuario": "Codaya007", 
+   "contrasena": "mysecretpassword",
+   "email": "vivicalva@gmail.com", 
+   "pais": "Argentina", 
    "provincia": "Loja", 
    "direccion": "Av. Amazonica y Felipe Muñoz", 
    "telefono": "0921827178"
