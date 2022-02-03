@@ -187,13 +187,14 @@ userRouter.put("/updateUser", async (request, response, next) => {
     d: "mm",
   });
   try {
+    let password = await bcrypt.hash(contrasena, 10);
     const UserUpdate = await Usuario.update(
       {
         id,
         nombre,
         avatar: avata,
         usuario,
-        contrasena,
+        contrasena: password,
         email,
         pais,
         provincia,
