@@ -38,9 +38,9 @@ async function categoriaUpdate(req, res , next) {
   
     const UpdateCateg =await Categoria.update({
         nombre: nombre,
-   },
+    },
    {where: {id: id} });
-   return res.json(UpdateCateg)
+   
    
    if(!UpdateCateg){
     return res.status(200).send({
@@ -50,7 +50,7 @@ async function categoriaUpdate(req, res , next) {
     }
     res.status(200).send({
     status: 200,
-    message: 'Data Update Successfully'
+    message: 'Los datos se actualizaron correctamente'
  });
 
   }catch(error){
@@ -93,9 +93,34 @@ async function getAllCategorias(req, res) {
         next(SERVER_ERROR);
     }
   }
+  async function categoriaDelete(req, res , next) {
+    try{
+    const {id} = req.body;
+  
+    const UpdateCateg =await Categoria.destroy(
+     {where: {id: id} });
+   
+   if(!UpdateCateg){
+    return res.status(200).send({
+      status: 404,
+      message: 'No data found'
+    });
+    }
+    res.status(200).send({
+    status: 200,
+    message: 'Los datos se borraron correctamente'
+ });
+
+  }catch(error){
+    console.log(error)
+    next(SERVER_ERROR)
+  }
+}
+
 
 module.exports = {
     categoriaPost,
     getAllCategorias,
-    categoriaUpdate
+    categoriaUpdate,
+    categoriaDelete
 }
