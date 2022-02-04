@@ -1,14 +1,11 @@
-const Usuario = require('../db');
+const { Usuario } = require('../db');
 
 module.exports = async (req, res, next) => {
    try {
-      const user = await Usuario.findOne({
-         where: {
-            id: req.user.id
-         }
-      });
+      let user = await Usuario.findByPk(req.usuario.id);
+      user = user.toJSON()
 
-      if (user.role === 1) {
+      if (user.rol !== "2") {
          return next({
             status: 403,
             message: 'Acceso denegado'
