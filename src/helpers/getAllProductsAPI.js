@@ -8,7 +8,7 @@ module.exports = async () => {
       const response = await axios.get(urlAPI);
       data.products = response.data;
    } catch (err) {
-      console.log(err);
+      // console.log(err);
       data.error = {
          status: err.response.status,
          message: err.response.statusText
