@@ -16,9 +16,22 @@ async function LoadDb() {
         cantidad: 25
       };
     });
-
-    await Producto.bulkCreate(productosMaped, { validate: true });
-    // También le creo un admin de prueba
+    productosMaped.forEach(async (e) => {
+      await Producto.findOrCreate({
+        where: {
+          title: e.title,
+          price: e.price,
+          description: e.description,
+          image: e.image,
+          rate: e.rate,
+          count: e.count,
+          cantidad:e.cantidad
+        },
+      });
+    });
+    //console.log('DB success')
+    //await Producto.bulkCreate(productosMaped, { validate: true });
+    //También le creo un admin de prueba
     let contrasena = "", avatar = "";
     try {
       contrasena = await bcrypt.hash("admin123", 10);
