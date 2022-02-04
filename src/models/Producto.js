@@ -33,8 +33,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     cantidad: {
       type: DataTypes.INTEGER,
-      allowNull: true,
-
+      allowNull: false,
+      defaultValue: 1
     },
 
   }, {

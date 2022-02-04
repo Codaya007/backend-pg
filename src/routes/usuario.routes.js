@@ -93,7 +93,7 @@ userRouter.post("/register", async (request, response, next) => {
     );
   } catch (err) {
     console.log(err);
-    next(SERVER_ERROR);
+    next({});
   }
 });
 
@@ -165,7 +165,12 @@ userRouter.get("/", authentication, async (request, response, next) => {
   }
 });
 
-userRouter.put("/updateUser", async (request, response, next) => {
+
+
+// @route PUT user/update/
+// @desc Actualizar los datos de un usuario
+// @access Private
+userRouter.put("/update", authentication, async (request, response, next) => {
   const {
     id,
     nombre,
@@ -176,11 +181,9 @@ userRouter.put("/updateUser", async (request, response, next) => {
     provincia,
     direccion,
     telefono,
-    avatar,
-    rol = 1,
   } = request.body;
 
-  if (!id) return response.status(400).json({ message: "El id es Requerido" });
+  if (!id) return next({ status: 400, message: "El id es Requerido" });
   let avata = gravatar.url(email, {
     s: "200", //size
     r: "pg", //rate
@@ -190,7 +193,6 @@ userRouter.put("/updateUser", async (request, response, next) => {
     let password = await bcrypt.hash(contrasena, 10);
     const UserUpdate = await Usuario.update(
       {
-        id,
         nombre,
         avatar: avata,
         usuario,
@@ -200,7 +202,6 @@ userRouter.put("/updateUser", async (request, response, next) => {
         provincia,
         direccion,
         telefono,
-        rol: 1,
       },
       {
         where: {
@@ -210,11 +211,12 @@ userRouter.put("/updateUser", async (request, response, next) => {
     );
     if (UserUpdate)
       return response
-        .status(201)
+        .status(200)
         .json({ message: "Los Datos fueron Actualizados" });
+
     return response.status(203).json({ message: "Algo Sucedio" });
   } catch (error) {
-    return response.status(500).json({ error });
+    return next({});
   }
 });
 
