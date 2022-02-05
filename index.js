@@ -6,13 +6,13 @@ const LoadDb = require('./src/helpers/loadDb')
 
 // Syncing all the models at once.
 conn.sync({ force: true })
-  .then(async () => {
+  .then(() => {
     server.listen(PORT, () => {
-      LoadDb();
       console.log(`Listening at port ${PORT}`);
     })
+  }).then(() => {
+    LoadDb();
   })
   .catch((err) => {
     console.log(err.message);
-    console.log(`No se ha podido conectar a la BBDD`);
   });

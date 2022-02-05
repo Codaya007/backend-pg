@@ -12,6 +12,21 @@ module.exports = [
       nombre: "Repuestos"
    },
    {
-      nombre: "Cámaras"
+      nombre: "Camera"
+   },
+   {
+      nombre: "Smart Tv"
+   },
+   {
+      nombre: "Electronics"
+   },
+   {
+      nombre: "SmartPhones"
+   },
+   {
+      nombre: "Smartwatch"
+   },
+   {
+      nombre: "Smart TV"
    }
 ]
