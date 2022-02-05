@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const { getAllProductos, getProductoById, postProducto, deleteProducto, putProducto } = require('../controllers/controllerProduct')
+const { getAllProductos, getAllProductosByCategory, getProductoById, postProducto, deleteProducto, putProducto } = require('../controllers/controllerProduct')
 const productRouter = Router();
 
 // Requerimos el middleware de autenticación
@@ -20,12 +20,25 @@ productRouter.get('/:id', async (req, res, next) => {
 
 
 // @route GET products/
-// @desc Obtener la información de todos los países
+// @desc Obtener la información de todos los productos
 // @access Public
 productRouter.get('/', async (req, res, next) => {
     let { title = null } = req.query;
 
     const get = await getAllProductos(title);
+    if (get.error) return next(get.error);
+
+    res.json(get);
+});
+
+
+// @route GET products/category/:categoryId
+// @desc Obtener la información de todos los productos de una categoria
+// @access Public
+productRouter.get('/category/:categoriaId', async (req, res, next) => {
+    let { categoriaId = null } = req.params;
+
+    const get = await getAllProductosByCategory(categoriaId);
     if (get.error) return next(get.error);
 
     res.json(get);

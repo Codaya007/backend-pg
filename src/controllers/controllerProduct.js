@@ -70,6 +70,34 @@ const getProductoById = async (id) => {
 }
 
 
+const getAllProductosByCategory = async (categoriaId) => {
+  try {
+    let category = await Categoria.findByPk(categoriaId, {
+      attributes: ["nombre"]
+    });
+
+    if (!category) return { error: { status: 400, message: "No existe la categoría especificada" } };
+
+    let foundedProducts = await Producto.findAll({ where: { categoriaId } });
+
+    if (!foundedProducts.length) return { error: { status: 404, message: "Ningún producto pertenece a esta categoría" } };
+
+    foundedProducts = foundedProducts.map(el => {
+      prod = el.toJSON();
+      prod.category = category.nombre;
+      delete prod.categoriaId;
+
+      return prod;
+    });
+
+    return foundedProducts;
+  } catch (e) {
+    console.log(e);
+    return { error: {} };
+  }
+}
+
+
 const postProducto = async (title, price, description, category, image, rate, count, cantidad) => {
   try {
     let exist = await Producto.findOne({ where: { title } });
@@ -137,7 +165,8 @@ module.exports = {
   getProductoById,
   postProducto,
   deleteProducto,
-  putProducto
+  putProducto,
+  getAllProductosByCategory
 }
 
 
