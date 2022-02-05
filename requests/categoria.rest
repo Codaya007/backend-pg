@@ -2,6 +2,13 @@
 ### Public /categories
 GET {{baseUrl}}/categories HTTP/1.1
 
+### Por query nombre
+GET {{baseUrl}}/categories?nombre=mou HTTP/1.1
+
+### 
+GET {{baseUrl}}/categories?nombre=aceite HTTP/1.1
+
+
 ### Solo el admin tiene acceso a las acciones: Update, Delete, Create
 # @name usuarioAdmin
 POST {{baseUrl}}/user/login HTTP/1.1
@@ -21,7 +28,7 @@ x-auth-token: {{tokenAdmin}}
 Content-Type: application/json
 
 {
-   "nombre": "Teclados"
+   "nombre": "Nueva"
 }
 
 ###

@@ -59,7 +59,7 @@ async function categoriaUpdate(req, res, next) {
   }
 }
 
-async function getAllCategorias(req, res) {
+async function getAllCategorias(req, res, next) {
   const { nombre } = req.query;
 
   try {
@@ -82,7 +82,7 @@ async function getAllCategorias(req, res) {
 
         return next({
           status: 404,
-          message: `no se encuentra ninguna Categoria con el nombre '${nombre}'`,
+          message: `No se encuentra ninguna Categoria con el nombre '${nombre}'`,
         });
       }
       return res.send(CategQuery);
@@ -106,7 +106,6 @@ async function categoriaDelete(req, res, next) {
       });
     }
     res.json({
-      status: 200,
       message: 'Los datos se borraron correctamente'
     });
 
