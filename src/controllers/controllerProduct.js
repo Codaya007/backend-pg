@@ -1,13 +1,27 @@
 const { Sequelize } = require("sequelize");
 const Op = Sequelize.Op;
-const { Producto } = require('../db')
+const { Producto, Categoria } = require('../db')
+
+const mapProduct = (foundedProduct) => {
+  foundedProduct = foundedProduct.toJSON()
+  if (foundedProduct.categoriaId) {
+    delete foundedProduct.categoriaId;
+    let category = foundedProduct.Categorium.nombre;
+    foundedProduct.category = category;
+  }
+  delete foundedProduct.Categorium;
+
+  return foundedProduct;
+}
 
 async function getAllProductos(title) {
   try {
     if (!title) {
       // const ProductAll = await Producto.findAll({ include: Categoria });
-      const ProductAll = await Producto.findAll({});
-      return ProductAll;
+      let productAll = await Producto.findAll({ include: Categoria });
+      productAll = productAll.map(prod => mapProduct(prod));
+
+      return productAll;
     } else {
       const ProductQuery = await Producto.findAll({
         where: {
@@ -15,7 +29,7 @@ async function getAllProductos(title) {
             [Op.iLike]: `%${title}%`
           },
         },
-        // include: Categoria
+        include: Categoria
       });
 
       if (!ProductQuery[0]) {
@@ -27,6 +41,7 @@ async function getAllProductos(title) {
         };
       }
 
+      ProductQuery.map(prod => mapProduct(prod));
       return ProductQuery;
     }
   } catch (error) {
@@ -37,10 +52,17 @@ async function getAllProductos(title) {
 
 const getProductoById = async (id) => {
   try {
-    const foundedProduct = await Producto.findByPk(id);
+    let foundedProduct = await Producto.findByPk(id, {
+      include: {
+        model: Categoria,
+        required: false,
+        attributes: ["nombre"]
+      }
+    });
+
     if (!foundedProduct) return { error: { status: 404, message: "Producto no encontrado" } };
 
-    return foundedProduct;
+    return mapProduct(foundedProduct);
   } catch (e) {
     console.log(e);
     return { error: {} };
@@ -50,11 +72,15 @@ const getProductoById = async (id) => {
 
 const postProducto = async (title, price, description, category, image, rate, count, cantidad) => {
   try {
+    let exist = await Producto.findOne({ where: { title } });
+
+    if (exist) return { error: { status: 400, message: "Ya existe un producto con ese nombre (title)" } };
+
     let createProduct = await Producto.create({
       title,
       price,
       description,
-      category,
+      categoriaId: category,
       image,
       rate,
       count,
@@ -77,20 +103,19 @@ const putProducto = async (title, price, description, category, image, rate, cou
         title: title,
         price: price,
         description: description,
-        category: category,
+        categoriaId: category, //categoryId almacena el id de la categoría a la que pertenece
         image: image,
         rate: rate,
         count: count,
         cantidad: cantidad
-
       },
-      { where: { id: id } })
-    return `success update`
+      { where: { id } })
+    return "Success update";
 
   } catch (error) {
+    return { error: {} };
     console.log(error.message)
   }
-
 }
 
 const deleteProducto = async (id) => {
