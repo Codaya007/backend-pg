@@ -102,7 +102,7 @@ const postProducto = async (title, price, description, category, image, rate, co
   try {
     let exist = await Producto.findOne({ where: { title } });
 
-    if (exist) return { error: { status: 400, message: "Ya existe un producto con ese nombre (title)" } };
+    if (exist) return { error: { status: 400, message: `Ya existe un producto con ese nombre: '${title}'` } };
 
     let createProduct = await Producto.create({
       title,
