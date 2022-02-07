@@ -2,29 +2,30 @@
 // Luego le injectamos la conexion a sequelize.
 module.exports = (sequelize, DataTypes) => {
   // defino el modelo
-  sequelize.define('Producto', {
+  const Producto = sequelize.define('Producto', {
     title: {
       type: DataTypes.STRING,
       allowNull: false,
+      unique: true,
     },
     price: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.FLOAT,
 
     },
     description: {
-      type: DataTypes.STRING,
-      allowNull: false,
+      type: DataTypes.TEXT,
+      allowNull: true,
     },
-    category: {
-      type: DataTypes.STRING,
-      allowNull: false,
+    categoriaId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
     },
     image: {
       type: DataTypes.STRING,
       allowNull: false,
     },
     rate: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.FLOAT,
 
     },
     count: {
@@ -33,8 +34,21 @@ module.exports = (sequelize, DataTypes) => {
     },
     cantidad: {
       type: DataTypes.INTEGER,
-
+      allowNull: false,
+      defaultValue: 1
     },
 
-  }, { timestamps: false });
+  }, {
+    timestamps: true
+  });
+
+  Producto.associate = models => {
+
+    // Relacionando un Producto con Categoría (1:m)
+    Producto.belongsTo(models.Categoria, {
+      sourceKey: 'id',
+      foreignKey: 'categoriaId'
+    });
+
+  };
 };

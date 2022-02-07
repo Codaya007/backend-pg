@@ -2,7 +2,7 @@
 // Luego le injectamos la conexion a sequelize.
 module.exports = (sequelize, DataTypes) => {
   // defino el modelo
-  sequelize.define('Usuario', {
+  const Usuario = sequelize.define('Usuario', {
     nombre: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -43,8 +43,21 @@ module.exports = (sequelize, DataTypes) => {
       // 1 -> normal; 2 -> admin
       type: DataTypes.ENUM("1", "2"),
       allowNull: false,
+      defaultValue: "1"
     },
 
 
-  }, { timestamps: false });
+  }, {
+    timestamps: false
+  });
+
+  Usuario.associate = models => {
+
+    // Relacionando un Producto con Categoría (1:m)
+    Usuario.hasMany(models.Pedido, {
+      sourceKey: 'id',
+      foreignKey: 'usuarioId'
+    });
+
+  };
 };

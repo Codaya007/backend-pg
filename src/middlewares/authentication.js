@@ -1,7 +1,8 @@
 const jwt = require('jsonwebtoken');
+const { Usuario } = require('../db');
 const { JWT_SECRET } = process.env;
 
-module.exports = (req, res, next) => {
+module.exports = async (req, res, next) => {
 
    // el token viene en el header de la petición, lo tomamos:
    const token = req.header('x-auth-token');
@@ -13,6 +14,10 @@ module.exports = (req, res, next) => {
 
    try {
       const decoded = jwt.verify(token, JWT_SECRET);
+
+      // Compruebo que efectivamente el usuario exista en la DDBB
+      const user = await Usuario.findByPk(decoded.usuario.id);
+      !user && next({ status: 400, message: "Invalid user" });
 
       //Obtenemos el payload del token (usuario)
       req.usuario = decoded.usuario;
