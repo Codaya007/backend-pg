@@ -1,5 +1,5 @@
 const PENDIENTE = "PENDIENTE";
-const COMPLETADO = "COMPLETADA";
+const COMPLETADO = "COMPLETADO";
 
 module.exports = {
    PENDIENTE,
