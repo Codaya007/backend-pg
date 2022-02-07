@@ -53,6 +53,15 @@ Content-Type: application/json
 GET {{baseUrl}}/pedidos HTTP/1.1
 x-auth-token: {{tokenAdmin}}
 
+### Actualizamos un pedido a completado
+PUT {{baseUrl}}/pedidos/1 HTTP/1.1
+x-auth-token: {{tokenAdmin}}
+Content-Type: application/json
+
+{
+   "status": "COMPLETADO"
+}
+
 ### ruta pedidos/:userId
 ### Solo el usuario propietario puede acceder a sus propios pedidos y el admin a todos
 # Usuario 1 es admin, ya que se inicializa con el servidor
@@ -64,7 +73,7 @@ GET {{baseUrl}}/pedidos/10 HTTP/1.1
 x-auth-token: {{tokenAdmin}}
 
 ### Cuando pide su propia informacion se la entrega
-GET {{baseUrl}}/pedidos/2 HTTP/1.1
+GET {{baseUrl}}/pedidos/6 HTTP/1.1
 x-auth-token: {{tokenUno}}
 
 
