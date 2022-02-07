@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const { getAllPedidos, getPedidosByUsuario, createPedido } = require('../controllers/controllerPedido');
+const { getAllPedidos, getPedidosByUsuario, createPedido, updateStatusPedido } = require('../controllers/controllerPedido');
 const { Usuario } = require('../db');
 const pedidoRouter = Router();
 
@@ -67,7 +67,25 @@ pedidoRouter.post('/',
 
       res.status(400).end();
    }
-)
+);
 
+
+// @route PUT pedidos/:idPedido
+// @desc Actualizar el estado de un pedido
+// @access Private Admin
+pedidoRouter.put('/:pedidoId',
+   authentication,
+   adminAuthentication,
+   async (req, res, next) => {
+      const { pedidoId } = req.params;
+      const { status } = req.body;
+
+      let get = await updateStatusPedido(pedidoId, status);
+
+      if (get.error) return next(get.error);
+
+      return res.json(get);
+   }
+);
 
 module.exports = pedidoRouter;

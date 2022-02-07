@@ -102,7 +102,7 @@ const postProducto = async (title, price, description, category, image, rate, co
   try {
     let exist = await Producto.findOne({ where: { title } });
 
-    if (exist) return { error: { status: 400, message: "Ya existe un producto con ese nombre (title)" } };
+    if (exist) return { error: { status: 400, message: `Ya existe un producto con ese nombre: '${title}'` } };
 
     let createProduct = await Producto.create({
       title,
@@ -148,8 +148,12 @@ const putProducto = async (title, price, description, category, image, rate, cou
 
 const deleteProducto = async (id) => {
   try {
+    let dest = await Producto.findByPk(id);
+
+    if (!dest) return { error: { status: 404, message: "Id no válido" } };
+
     // console.log(id)
-    let dest = await Producto.destroy({
+    dest = await Producto.destroy({
       where: { id }
     })
 
