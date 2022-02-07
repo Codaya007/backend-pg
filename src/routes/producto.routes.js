@@ -36,7 +36,7 @@ productRouter.get('/', async (req, res, next) => {
 // @desc Obtener la información de todos los productos de una categoria
 // @access Public
 productRouter.get('/category/:categoriaId', async (req, res, next) => {
-    let { categoriaId = null } = req.params;
+    let { categoriaId } = req.params;
 
     const get = await getAllProductosByCategory(categoriaId);
     if (get.error) return next(get.error);
@@ -76,7 +76,7 @@ productRouter.put('/:id', authentication, adminAuthentication, async (req, res, 
 // @route DELETE products/:id
 // @desc Elimina un producto por id
 // @access Private Admin
-productRouter.delete('/:id', authentication, adminAuthentication, async (req, res) => {
+productRouter.delete('/:id', authentication, adminAuthentication, async (req, res, next) => {
     const { id } = req.params;
 
     let destroy = await deleteProducto(id);

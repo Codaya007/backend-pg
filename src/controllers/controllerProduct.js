@@ -148,8 +148,12 @@ const putProducto = async (title, price, description, category, image, rate, cou
 
 const deleteProducto = async (id) => {
   try {
+    let dest = await Producto.findByPk(id);
+
+    if (!dest) return { error: { status: 404, message: "Id no válido" } };
+
     // console.log(id)
-    let dest = await Producto.destroy({
+    dest = await Producto.destroy({
       where: { id }
     })
 
