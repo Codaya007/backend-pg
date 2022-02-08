@@ -19,8 +19,17 @@ module.exports = (sequelize, DataTypes) => {
          type: DataTypes.DOUBLE,
          allowNull: false,
       },
+      fechaCreacion: {
+         type: DataTypes.DATE,
+         get() {
+            return new Date(this.getDataValue('fechaCreacion'));
+         },
+         set(fechaCreacion) {
+            this.setDataValue('fechaCreacion', fechaCreacion.toISOString().split('T')[0])
+         }
+      }
    }, {
-      timestamps: true
+      timestamps: false
    });
 
 

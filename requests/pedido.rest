@@ -53,6 +53,18 @@ Content-Type: application/json
 GET {{baseUrl}}/pedidos HTTP/1.1
 x-auth-token: {{tokenAdmin}}
 
+### obtener todos los pedidos filtrando por fecha YY-MM-DD
+GET {{baseUrl}}/pedidos?desde=2022-02-08&hasta=2022-02-09 HTTP/1.1
+x-auth-token: {{tokenAdmin}}
+
+###
+GET {{baseUrl}}/pedidos?desde=2021-02-08&hasta=2022-02-09 HTTP/1.1
+x-auth-token: {{tokenAdmin}}
+
+###
+GET {{baseUrl}}/pedidos?desde=2023-02-08&hasta=2022-02-09 HTTP/1.1
+x-auth-token: {{tokenAdmin}}
+
 ### Actualizamos un pedido a completado
 PUT {{baseUrl}}/pedidos/1 HTTP/1.1
 x-auth-token: {{tokenAdmin}}

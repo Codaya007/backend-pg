@@ -14,9 +14,9 @@ pedidoRouter.get('/',
    authentication,
    adminAuthentication,
    async (req, res, next) => {
-      // const { date } = req.query;
+      const { desde, hasta } = req.query;
 
-      let get = await getAllPedidos();
+      let get = await getAllPedidos(desde, hasta);
       if (get.error) return next(get.error);
 
       return res.json(get);
