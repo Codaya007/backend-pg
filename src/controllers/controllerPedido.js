@@ -89,7 +89,7 @@ module.exports = {
          let total = Math.round(pedidoFinal.reduce((prev, current) => (current.price * current.cantidad) + prev, 0) * 100) / 100;
 
          // Ahora creo el pedido
-         let pedidoRealizado = await Pedido.create({ usuarioId: userId, total });
+         let pedidoRealizado = await Pedido.create({ usuarioId: userId, total, fechaCreacion: new Date() });
          pedidoRealizado = pedidoRealizado.toJSON();
 
          // Ahora creo todas las líneas de pedidos
@@ -134,18 +134,41 @@ module.exports = {
       }
    },
 
-   getAllPedidos: async () => {
+   getAllPedidos: async (desde, hasta) => {
       try {
-         let pedidos = await Pedido.findAll({
-            // Incluyo también la información del usuario para que se pueda realizar el envío, etc
-            include: {
-               model: Usuario,
-               // No me interesa toda la info del usuario, solo la de contacto y direccion
-               attributes: ["id", "nombre", "email", "telefono", "pais", "direccion", "provincia"]
-            }
-         });
+         let pedidos;
+         if (!desde && !hasta) {
+            pedidos = await Pedido.findAll({
+               // Incluyo también la información del usuario para que se pueda realizar el envío, etc
+               include: {
+                  model: Usuario,
+                  // No me interesa toda la info del usuario, solo la de contacto y direccion
+                  attributes: ["id", "nombre", "email", "telefono", "pais", "direccion", "provincia"]
+               }
+            });
+         } else {
+
+            if (!desde || !hasta) return { error: { status: 400, message: "Para filtrar por fecha debe poner tanto una fecha de inicio (desde) como de fin (hasta)" } };
+
+            // Si tengo una fecha de inicio y fin filtro los pedidos que estén en esas fechas
+            pedidos = await Pedido.findAll({
+               // Incluyo también la información del usuario para que se pueda realizar el envío, etc
+               include: {
+                  model: Usuario,
+                  // No me interesa toda la info del usuario, solo la de contacto y direccion
+                  attributes: ["id", "nombre", "email", "telefono", "pais", "direccion", "provincia"]
+               }, where: {
+                  // Agrego las restricciones de filtrado por fecha
+                  fechaCreacion: {
+                     [Op.between]: [new Date(desde), new Date(hasta)],
+                  }
+               }
+            });
+         }
 
          if (!pedidos.length) {
+            if (desde && hasta) return { error: { status: 404, message: "No hay pedidos registrados en este periodo" } };
+
             return { error: { status: 404, message: "No hay pedidos registrados" } };
          } else {
             pedidos = await Promise.all(pedidos.map(mapPedido));
