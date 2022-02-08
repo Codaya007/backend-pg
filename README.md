@@ -178,3 +178,81 @@ _Requerimientos:_
 Si el producto se eliminó correctamente nos devuelve un status **_204_** y ningún contenido por body.
 
 Si no se encontró el producto a eliminar, nos devuelve un status **_404_** y el mensaje **_Id no válido_**.
+
+## **RUTAS CATEGORIA**
+
+Todas las rutas categoria se encuentran en **/categories**
+
+Las peticiones que se pueden realizar son:
+
+### Rutas privadas
+
+#### **POST /categories**
+
+Esta ruta nos permite crear una nueva categoría.
+
+_Requerimientos:_
+
+**_Header:_**
+
+- x-auth-token
+- Content-type
+
+**_Body:_**
+
+- nombre
+
+Si la nueva categoría fue creada exitosamente me devuelve un status **_201_** y la categoría creada.
+
+Si le pasamos un nombre repetido, nos devolverá un status **_400_** y el mensaje **_Ya existe la Categoria 'nombre'_**
+
+#### **PUT /categories/update**
+
+Esta ruta nos permite cambiar el nombre de una categoría existente.
+
+_Requerimientos:_
+
+**_Header:_**
+
+- x-auth-token
+- Content-type
+
+**_Body:_**
+
+- nombre (Nuevo nombre)
+- id (Id de la categoría a modificar)
+
+Si la categoría se actualizó correctamente obtenemos un status **_200_** y el mensaje **_Los datos se actualizaron correctamente_**.
+
+Si el id pasado no se corresponde con ninguna categoría, nos devuelve un status **_404_** y un mensaje **_No data found_**.
+
+#### **DELETE /categories/delete**
+
+Esta ruta nos permite eliminar una categoría existente.
+
+_Requerimientos:_
+
+**_Header:_**
+
+- x-auth-token
+- Content-type
+
+**_Body:_**
+
+- id (Id de la categoría a eliminar)
+
+Si la eliminación se realizó exitosamente me devuelve un status **_200_** y el mensaje **_Los datos se borraron correctamente_**.
+
+Si ninguna categoría se corresponde con el id enviado, nos devuelve un status **_404_** y un mensaje **_No data found_**.
+
+### Rutas públicas
+
+#### **GET /categories**
+
+Esta es una ruta pública por lo que no necesita ningún _token_ y acepta una query **nombre** que me entregará una categoría por nombre.
+
+Si la petición no tiene la query **_nombre_** me devuelve un status **_200_** y un array con todas las categorías de la base de datos y su información.
+
+Si la petición lleva una query nombre, por ejemplo _/categories?nombre=tv_, me devuelve un array con todas las categorías que matcheen con el nombre pasado por query.
+
+En ambos casos, si no se encuentra ninguna categoría, me devuelve un status **_404_** y un mensaje de error.
