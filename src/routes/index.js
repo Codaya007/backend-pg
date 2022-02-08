@@ -5,7 +5,7 @@ const userRouter = require('./usuario.routes');
 const productRouter = require('./producto.routes')
 const pedidoRouter = require('./pedido.routes')
 const categoryRouter = require('./categoria.routes')
-const offersRouter = require('./offers.routes')
+const offersRouter = require('./oferta.routes')
 
 const router = Router();
 
