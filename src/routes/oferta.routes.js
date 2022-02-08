@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const offersRouter = Router();
-const { getOffers, postOffers, putOffers, deleteOffers } = require('../controllers/controllerOffers')
+const { getOffers, postOffers, putOffers, deleteOffers } = require('../controllers/controllerOfertas')
 
 offersRouter.get('/', async (req, res) => {
      let result = await getOffers()
