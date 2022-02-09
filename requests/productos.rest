@@ -58,6 +58,16 @@ Content-Type: application/json
    "image": "edit.png",
    "cantidad": 10
 }
+###
+Put {{baseUrl}}/rate/ HTTP/1.1
+x-auth-token: {{tokenAdmin}}
+Content-Type: application/json
+
+{
+   "id":5,
+   "rate": 10,
+   "count": 20
+}
 
 ### 
 DELETE {{baseUrl}}/21 HTTP/1.1

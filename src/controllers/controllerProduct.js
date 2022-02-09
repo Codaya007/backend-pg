@@ -159,23 +159,18 @@ const deleteProducto = async (id) => {
   }
 }
 
-//const putProducto = async 
-async function updateRateProducto( req, res, next) {
-
+async function updateRateProducto(req, res, next) {
   try {
-    const { rate,count } = req.body
-    const { id } = req.params;
+    const { id, rate,count } = req.body;
 
-    let update = await Producto.update(
-      {
-       // rate: [...rate + rate] / 2 ,
-        rate:rate ,
-        count: count + 1,
-        
-      },
-      { where: { id } })
+    const UpdateCateg = await Producto.update({
+      rate:rate,
+      count:count+1
+    },
+      { where: { id } });
 
-    if (!update) {
+
+    if (!UpdateCateg) {
       return next({
         status: 404,
         message: 'No data found'
@@ -186,10 +181,12 @@ async function updateRateProducto( req, res, next) {
     });
 
   } catch (error) {
-    console.log(error.message)
+    console.log(error)
     next({})
   }
 }
+
+
 
 module.exports = {
   getAllProductos,
