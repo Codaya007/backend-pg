@@ -17,11 +17,15 @@ async function pagosPost(req, res, next) {
     // Si hay un id lo pasamos a json
     pedido = pedido.toJSON();
 
+    // Valido que el pedido no esté pagado
+    if (pedido.pagado === true) return next({ status: 400, message: "El pedido ya está pagado" });
+
     // Generamos una descripción
     let description = `Deducción por compra id ${pedido.id} realizada en ${NOMBRE_ECOMMERCE}. Gracias por su compra`;
 
     // Creamos un nuevo pago
-    const payment = await stripe.paymentIntents.create({
+    // const payment = 
+    await stripe.paymentIntents.create({
       amount: pedido.total * 100,
       currency: "USD",
       description,
@@ -29,9 +33,14 @@ async function pagosPost(req, res, next) {
       confirm: true, //confirmamos el pago
     });
 
-    console.log(payment);
+    // console.log(payment);
+    // Actualizo el pedido para que conste como pagado
+    await Pedido.update({
+      pagado: true,
+    },
+      { where: { id: pedidoId } });
 
-    return res.status(200).json({ message: "Successful Payment" });
+    return res.json({ message: "Successful Payment" });
   } catch (error) {
 
     console.log(error);
