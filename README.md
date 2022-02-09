@@ -189,6 +189,8 @@ Si el producto se eliminó correctamente nos devuelve un status **_204_** y ning
 
 Si no se encontró el producto a eliminar, nos devuelve un status **_404_** y el mensaje **_Id no válido_**.
 
+[Volver al índice](#indice)
+
 ## **RUTAS CATEGORIA**
 
 Todas las rutas categoria se encuentran en **/categories**
