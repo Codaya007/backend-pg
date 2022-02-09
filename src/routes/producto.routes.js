@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const { getAllProductos, getAllProductosByCategory, getProductoById, postProducto, deleteProducto, putProducto } = require('../controllers/controllerProduct')
+const { updateRateProducto ,getAllProductos, getAllProductosByCategory, getProductoById, postProducto, deleteProducto, putProducto } = require('../controllers/controllerProduct')
 const productRouter = Router();
 
 // Requerimos el middleware de autenticación
@@ -71,6 +71,11 @@ productRouter.put('/:id', authentication, adminAuthentication, async (req, res, 
 
     res.json(put);
 })
+
+// @route UPDATE rate y count Productos/
+// @desc Actualizar una rate y count  por id recibido por body
+// @access Private Usuario
+productRouter.put('/rate/:id', authentication, updateRateProducto);
 
 
 // @route DELETE products/:id
