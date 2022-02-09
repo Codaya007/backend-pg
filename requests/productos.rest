@@ -42,8 +42,6 @@ Content-Type: application/json
    "description": "Soy un nuevo producto",
    "category": 3,
    "image": "fake.png",
-   "rate": 3.5,
-   "count": 35,
    "cantidad": 20
 }
 
@@ -58,8 +56,6 @@ Content-Type: application/json
    "description": "Edit",
    "category": 4,
    "image": "edit.png",
-   "rate": 2,
-   "count": 10,
    "cantidad": 10
 }
 

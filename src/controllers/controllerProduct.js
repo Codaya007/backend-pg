@@ -98,7 +98,7 @@ const getAllProductosByCategory = async (categoriaId) => {
 }
 
 
-const postProducto = async (title, price, description, category, image, rate, count, cantidad) => {
+const postProducto = async (title, price, description, category, image, cantidad) => {
   try {
     let exist = await Producto.findOne({ where: { title } });
 
@@ -110,8 +110,6 @@ const postProducto = async (title, price, description, category, image, rate, co
       description,
       categoriaId: category,
       image,
-      rate,
-      count,
       cantidad
     });
 
@@ -123,9 +121,8 @@ const postProducto = async (title, price, description, category, image, rate, co
   }
 }
 
-const putProducto = async (title, price, description, category, image, rate, count, cantidad, id) => {
+const putProducto = async (title, price, description, category, image, cantidad, id) => {
   try {
-    // id = parseInt(id)
     let update = await Producto.update(
       {
         title: title,
@@ -133,16 +130,14 @@ const putProducto = async (title, price, description, category, image, rate, cou
         description: description,
         categoriaId: category, //categoryId almacena el id de la categoría a la que pertenece
         image: image,
-        rate: rate,
-        count: count,
         cantidad: cantidad
       },
       { where: { id } })
     return "Success update";
 
   } catch (error) {
+    console.log(error)
     return { error: {} };
-    console.log(error.message)
   }
 }
 

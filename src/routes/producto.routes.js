@@ -50,9 +50,9 @@ productRouter.get('/category/:categoriaId', async (req, res, next) => {
 // @desc Crear un nuevo producto con la información raída por body
 // @access Private Admin
 productRouter.post('/', authentication, adminAuthentication, async (req, res, next) => {
-    const { title, price, description, category, image, rate, count, cantidad } = req.body
+    const { title, price, description, category, image, cantidad } = req.body
 
-    let post = await postProducto(title, price, description, category, image, rate, count, cantidad);
+    let post = await postProducto(title, price, description, category, image, cantidad);
     if (post.error) return next(post.error);
 
     res.status(201).json(post);
@@ -63,10 +63,10 @@ productRouter.post('/', authentication, adminAuthentication, async (req, res, ne
 // @desc Actualiza un nuevo producto por id
 // @access Private Admin
 productRouter.put('/:id', authentication, adminAuthentication, async (req, res, next) => {
-    const { title, price, description, category, image, rate, count, cantidad } = req.body;
+    const { title, price, description, category, image, cantidad } = req.body;
     const { id } = req.params;
 
-    let put = await putProducto(title, price, description, category, image, rate, count, cantidad, id);
+    let put = await putProducto(title, price, description, category, image, cantidad, id);
     if (put.error) return next(put.error);
 
     res.json(put);
