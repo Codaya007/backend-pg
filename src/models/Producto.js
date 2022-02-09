@@ -26,11 +26,11 @@ module.exports = (sequelize, DataTypes) => {
     },
     rate: {
       type: DataTypes.FLOAT,
-
+      defaultValue: 0
     },
     count: {
       type: DataTypes.INTEGER,
-
+      defaultValue: 0
     },
     cantidad: {
       type: DataTypes.INTEGER,

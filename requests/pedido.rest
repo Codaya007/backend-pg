@@ -86,3 +86,11 @@ x-auth-token: {{tokenUno}}
 ### Cuando pide información de otro usuario le envía un error (403)
 GET {{baseUrl}}/pedidos/1 HTTP/1.1
 x-auth-token: {{tokenUno}}
+
+### Voy a eliminar el pedido 1
+DELETE {{baseUrl}}/pedidos/1 HTTP/1.1
+x-auth-token: {{tokenUno}}
+
+### Voy a eliminar el pedido 2 pero con el token del admin (debería permitirmelo)
+DELETE {{baseUrl}}/pedidos/2 HTTP/1.1
+x-auth-token: {{tokenAdmin}}

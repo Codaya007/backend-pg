@@ -1,5 +1,5 @@
 const { Pedido, LineaDePedido, Producto, Usuario } = require("../db");
-const { Op } = require('sequelize');
+const { Op, UUID } = require('sequelize');
 
 const mapPedido = async (el) => {
    el = el.toJSON();
@@ -227,6 +227,59 @@ module.exports = {
       } catch (error) {
          console.log(error);
          return { error: {} }
+      }
+   },
+
+   deletePedido: async (id, userIdToken) => {
+      try {
+         let pedido = await Pedido.findByPk(id);
+
+         if (!pedido) return { error: { status: 404, message: "Ningún pedido coincide con el id proporcionado" } };
+
+         pedido = pedido.toJSON();
+
+         if (pedido.pagado === true) return { error: { status: 400, message: "No puede eliminar un pedido que ya está pagado" } };
+
+         let user = await Usuario.findByPk(userIdToken);
+         user = user.toJSON();
+
+         // console.log(user);
+
+         // Valido que sea el usuario propietario del pedido o el administrador
+         if (user.id !== pedido.usuarioId && user.rol !== "2") return { error: { status: 403, message: "No está autorizado para realizar esta acción" } };
+
+         // Traigo todas las líneas de pedido que pertenezcan a ese pedido para devolver los productos al stock y eliminar las lineas
+         const lineasPedido = await LineaDePedido.findAll({ where: { pedidoId: id } });
+         await Promise.all(lineasPedido.map(async (e) => {
+            // Lo paso a JSON para tener solo los valores útiles
+            e.toJSON();
+
+            // console.log(e);
+
+            // Traigo el producto para obtener su cantidad y luego poder devolver los productos pedidos
+            let producto = await Producto.findByPk(e.productoId);
+            producto = producto.toJSON();
+
+            // Actualizo el producto sumandole la cantidad que había reservado para el pedido
+            await Producto.update({
+               cantidad: producto.cantidad + e.cantidad
+            }, {
+               where: { id: e.productoId }
+            });
+
+            // Luego tengo que eliminar la línea de pedido
+            await LineaDePedido.destroy({ where: { id: e.id } });
+         }));
+
+         // Ya que se eliminaron todas las lineas de pedido, elimino finalmente el pedido
+
+         await Pedido.destroy({ where: { id } });
+
+         return {};
+      } catch (err) {
+         console.log(err);
+
+         return { error: {} };
       }
    }
 };
