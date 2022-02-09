@@ -1,10 +1,10 @@
 const { Sequelize } = require("sequelize");
 const Op = Sequelize.Op;
-const { Offers, Categoria } = require('../db')
+const { Ofertas, OfertaProducto } = require('../db')
 
 
 const getOffers = async()=>{
-    let get = await Offers.findAll({include: Categoria})
+    let get = await Ofertas.findAll({include: OfertaProducto})
     if(!get.length){
         
         return [{message:'No offers yet'}]
@@ -15,21 +15,17 @@ const getOffers = async()=>{
 
 }
 
-const postOffers = async (title, price, priceOffers, description, category, image, rate, count, cantidad) => {
+const postOffers = async (titulo, descripcion, porcentajeDescuento, estado, cantidad) => {
     try {
-      let exist = await Offers.findOne({ where: { title } });
+      let exist = await Ofertas.findOne({ where: { titulo } });
   
       if (exist) return { error: { status: 400, message: "Ya existe un producto con ese nombre (title)" } };
   
-      let createProduct = await Offers.create({
-        title,
-        price,
-        priceOffers,
-        description,
-        categoriaId: category,
-        image,
-        rate,
-        count,
+      let createProduct = await Ofertas.create({
+        titulo, 
+        descripcion, 
+        porcentajeDescuento, 
+        estado, 
         cantidad
       });
   
@@ -41,20 +37,15 @@ const postOffers = async (title, price, priceOffers, description, category, imag
     }
   }
 
-  const putOffers = async (title, price, priceOffers, description, category, image, rate, count, cantidad, id) => {
+  const putOffers = async (titulo, descripcion, porcentajeDescuento, estado, cantidad, id) => {
     try {
-      // id = parseInt(id)
-      let update = await Offers.update(
+      let update = await Ofertas.update(
         {
-          title: title,
-          price: price,
-          priceOffers:priceOffers,
-          description: description,
-          categoriaId: category, //categoryId almacena el id de la categoría a la que pertenece
-          image: image,
-          rate: rate,
-          count: count,
-          cantidad: cantidad
+          titulo, 
+          descripcion, 
+          porcentajeDescuento, 
+          estado, 
+          cantidad
         },
         { where: { id } })
       return "Success update";
@@ -66,8 +57,7 @@ const postOffers = async (title, price, priceOffers, description, category, imag
 
   const deleteOffers = async (id) => {
     try {
-      // console.log(id)
-      let dest = await Offers.destroy({
+      let dest = await Ofertas.destroy({
         where: { id }
       })
   

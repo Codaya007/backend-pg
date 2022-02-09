@@ -8,16 +8,16 @@ offersRouter.get('/', async (req, res) => {
 })
 
 offersRouter.post('/', async (req, res) => {
-     const { title, price, priceOffers, description, category, image, rate, count, cantidad } = req.body
-     let post = await postOffers(title, price, priceOffers, description, category, image, rate, count, cantidad)
+     const { titulo, descripcion, porcentajeDescuento, estado, cantidad } = req.body
+     let post = await postOffers(titulo, descripcion, porcentajeDescuento, estado, cantidad)
      res.send(post)
 })
 
 offersRouter.put('/:id', async (req, res, next) => {
-     const { title, price, priceOffers, description, category, image, rate, count, cantidad } = req.body;
+     const { titulo, descripcion, porcentajeDescuento, estado, cantidad} = req.body;
      const { id } = req.params;
 
-     let put = await putOffers(title, price, priceOffers, description, category, image, rate, count, cantidad, id);
+     let put = await putOffers(titulo, descripcion, porcentajeDescuento, estado, cantidad, id);
      if (put.error) return next(put.error);
 
      res.json(put);
