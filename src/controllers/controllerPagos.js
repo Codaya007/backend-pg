@@ -22,7 +22,7 @@ async function pagosPost(req, res, next) {
 
     // Creamos un nuevo pago
     const payment = await stripe.paymentIntents.create({
-      amount: pedido.total,
+      amount: pedido.total * 100,
       currency: "USD",
       description,
       payment_method: transaccionId,
@@ -34,7 +34,7 @@ async function pagosPost(req, res, next) {
     return res.status(200).json({ message: "Successful Payment" });
   } catch (error) {
 
-    console.log(error.raw.message);
+    console.log(error);
     return next({ status: 400, message: error.raw.message });
   }
 };
