@@ -243,7 +243,7 @@ module.exports = {
          let user = await Usuario.findByPk(userIdToken);
          user = user.toJSON();
 
-         console.log(user);
+         // console.log(user);
 
          // Valido que sea el usuario propietario del pedido o el administrador
          if (user.id !== pedido.usuarioId && user.rol !== "2") return { error: { status: 403, message: "No está autorizado para realizar esta acción" } };
@@ -254,7 +254,7 @@ module.exports = {
             // Lo paso a JSON para tener solo los valores útiles
             e.toJSON();
 
-            console.log(e);
+            // console.log(e);
 
             // Traigo el producto para obtener su cantidad y luego poder devolver los productos pedidos
             let producto = await Producto.findByPk(e.productoId);
