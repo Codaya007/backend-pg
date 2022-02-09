@@ -1,5 +1,13 @@
 # BACKEND ECOMMERCE
 
+### **Indice**
+
+- [Rutas Usuario](#rutas-usuario)
+- [Rutas Producto](#rutas-producto)
+- [Rutas Categoría](#rutas-categoria)
+- [Rutas Pedido](#rutas-pedido)
+- [Rutas pago](#rutas-pago)
+
 Este proyecto se trata de una tienda virtual o ecommerce para la venta de artículos tecnológicos.
 
 ## INSTALACIÓN
@@ -64,7 +72,9 @@ _Requerimientos:_
 
 - x-auth-token
 
-Si el token es válido me proporciona un status la información del usua
+Si el token es válido me proporciona un status la información del usuario
+
+[Volver al índice](#indice)
 
 ## **RUTAS PRODUCTO**
 
@@ -256,3 +266,109 @@ Si la petición no tiene la query **_nombre_** me devuelve un status **_200_** y
 Si la petición lleva una query nombre, por ejemplo _/categories?nombre=tv_, me devuelve un array con todas las categorías que matcheen con el nombre pasado por query.
 
 En ambos casos, si no se encuentra ninguna categoría, me devuelve un status **_404_** y un mensaje de error.
+
+[Volver al índice](#indice)
+
+## **RUTAS PEDIDO**
+
+Todas las rutas de pedido son privadas y se encuentran en **/pedidos**
+
+Las peticiones que se pueden realizar son:
+
+#### **GET /pedidos**
+
+Esta es una ruta para el administrador y me permite obtener todos los pedidos que se han realizado, también es posible filtrar los pedidos por query mediante la fecha de creación.
+
+_Requerimientos:_
+
+**_Header:_**
+
+- x-auth-token
+
+El filtrado por fecha de creación se realiza al recibir dos querys **_desde_** y **_hasta_** que son fechas en formato **YY-MM-DD**. Si encuentra pedidos en ese intervalo de fechas me envía un array con la información de los pedidos, y un status **_200_**. Si no haya pedidos me devuelve un status **_404_** y un mensaje **_No hay pedidos registrados en este periodo_**. Si solo se le envió una query (desde o hasta), devolverá un status **_400_** y el mensaje **_Para filtrar por fecha debe poner tanto una fecha de inicio (desde) como de fin (hasta)_**.
+
+Si no se le pasó ninguna query me devolverá un array con todos los pedidos que se han realizado y un status **_200_**.
+Si no hay ningún pedido registrado, devolverá un status **_404_**.
+
+#### **POST /pedidos**
+
+Esta es una ruta para el usuario registrado y me permite realizar un pedido.
+
+_Requerimientos:_
+
+**_Header:_**
+
+- x-auth-token
+- Content-type
+
+**_Body:_**
+
+- pedidos
+
+El atributo **_pedidos_** recibido por body es un array con la información de los productos.
+
+**Ejemplo:**
+
+`{ "pedidos": [ {"productoId": 1, "cantidad": 4}, {"productoId": 2, "cantidad": 6}, {"productoId": 3, "cantidad": 10}, {"productoId": 8, "cantidad": 3} ] }`
+
+La petición se procesará de forma que si no halla la cantidad requerida de productos, le entrega todo lo que hay en stock y si no hay nada, no toma en cuenta ese producto para el cálculo del total del pedido.
+
+Si no queda ningún producto de los que desea comprar, se le entregará un status **_400_** y el mensaje **_Ya no quedan productos en stock_**.
+
+Si el pedido se realizó con éxito, le devolverá un status **_200_** un objeto con los campos:
+
+- estado (PENDIENTE)
+- productosComprados (array con la información de los productos disponibles para comprar)
+- totalCompra (El precio final del pedido)
+- pagado (false)
+
+Inicialmente el pedido está en estado PENDIENTE hasta que el administrador manualmente lo marque como COMPLETADO y el campo pagado inicialmente esta en false hasta que se realice el pago respectivo.
+
+#### **PUT /pedidos/:pedidoId**
+
+Esta es una ruta para el administrador y me permite modificar únicamente el **_status_** de un pedido existente.
+
+_Requerimientos:_
+
+**_Header:_**
+
+- x-auth-token
+- Content-type
+
+**_Body:_**
+
+- status
+
+El status solo puede tomar los valores indicados: COMPLETADO o PENDIENTE.
+
+**Ejemplo:**
+
+`{ "status": "COMPLETADO" }`
+
+[Volver al índice](#indice)
+
+## **RUTAS PAGO**
+
+#### **POST /pedidos**
+
+El único tipo de petición que admite /pagos es POST y realiza un pago mediante targeta de crédito. Es una ruta privada que requiere autenticación:
+
+_Requerimientos:_
+
+**_Header:_**
+
+- x-auth-token
+- Content-type
+
+**_Body:_**
+
+- transaccionId
+- pedidoId
+
+Si el pedido ya se encuentra pagado, devolverá un status **_400_** y el mensaje **_El pedido ya está pagado_**.
+
+Si el id del pedido no se corresponde con ningún pedido en la base de datos, devolverá un status **_400_** y el mensaje **_El id del pedido no es válido_**.
+
+Mediante el pedidoId determina el monto a descontar de la cuenta y si el pago se ha realizado exitosamente devuelve un status **_200_** y un objeto con el atributo **_mensaje_** igual a **_Successful Payment_**.
+
+[Volver al índice](#indice)
