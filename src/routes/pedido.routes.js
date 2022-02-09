@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const { getAllPedidos, getPedidosByUsuario, createPedido, updateStatusPedido } = require('../controllers/controllerPedido');
+const { getAllPedidos, getPedidosByUsuario, createPedido, updateStatusPedido, deletePedido } = require('../controllers/controllerPedido');
 const { Usuario } = require('../db');
 const pedidoRouter = Router();
 
@@ -87,5 +87,20 @@ pedidoRouter.put('/:pedidoId',
       return res.json(get);
    }
 );
+
+
+
+// @route PUT pedidos/:idPedido
+// @desc Actualizar el estado de un pedido
+// @access Private Admin
+pedidoRouter.delete('/:pedidoId', authentication, async (req, res, next) => {
+   const { pedidoId } = req.params;
+
+   const deleted = await deletePedido(pedidoId, req.usuario.id);
+
+   if (deleted.error) return next(deleted.error);
+
+   res.status(204).end();
+})
 
 module.exports = pedidoRouter;
