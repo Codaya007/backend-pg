@@ -5,18 +5,12 @@
 ### REGISTRO UN USUARIO PARA TENER UN TOKEN DE AUTENTICACIÓN
 # @name usuarioUno
 
-POST {{baseUrl}}/user/register HTTP/1.1 
+POST {{baseUrl}}/user/login HTTP/1.1
 Content-Type: application/json
 
 {
-   "nombre": "Viviana",
-   "usuario": "Codaya007", 
-   "contrasena": "mysecretpassword",
-   "email": "vivicalva@gmail.com", 
-   "pais": "Ecuador", 
-   "provincia": "Loja", 
-   "direccion": "Av. Amazonica y Felipe Muñoz", 
-   "telefono": "0921827178"
+   "email": "luis@gmail.com",
+   "contrasena": "contraseña1"
 }
 
 ### guardo el token
