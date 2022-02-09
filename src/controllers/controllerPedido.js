@@ -126,7 +126,7 @@ module.exports = {
             return el;
          });
 
-         return { estado: pedidoRealizado.status, productosComprados: pedidoFinal, totalCompra: total };
+         return { estado: pedidoRealizado.status, productosComprados: pedidoFinal, totalCompra: total, pagado: false };
       } catch (error) {
          console.log(error);
 

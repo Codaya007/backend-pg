@@ -15,6 +15,11 @@ module.exports = (sequelize, DataTypes) => {
          allowNull: false,
          defaultValue: PENDIENTE
       },
+      pagado: {
+         type: DataTypes.BOOLEAN,
+         allowNull: false,
+         defaultValue: false
+      },
       total: {
          type: DataTypes.DOUBLE,
          allowNull: false,
