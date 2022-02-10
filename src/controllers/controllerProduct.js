@@ -173,8 +173,8 @@ async function updateRateProducto(req, res, next) {
 
     // Actualizo el producto
     await Producto.update({
-      // Para que solo tenga un decimal
-      rate: Math.round(((rate + producto.rate) / 2) * 10) / 10,
+      // Para que solo tenga un decimal (cuando es la primera calificación no debe promediarse)
+      rate: parseFloat(producto.count) === 0 ? rate : Math.round(((rate + producto.rate) / 2) * 10) / 10,
       count: producto.count + 1
     },
       { where: { id } });
