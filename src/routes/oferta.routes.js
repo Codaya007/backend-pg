@@ -1,11 +1,12 @@
 const { Router } = require('express');
 const { getAllOfertas, createOferta, updateOferta, deleteOferta, getOfertaById, getOfertasActivas, removeProducto, addProducto } = require('../controllers/controllerOfertas');
-
+const { check, validationResult } = require('express-validator');
 
 const offersRouter = Router();
 
 // Requerimos los middlewares de autenticación
 const { authentication, adminAuthentication } = require("../middlewares");
+const { ACTIVA, INACTIVA } = require('../data/constantes');
 
 
 offersRouter.get('/', async (req, res, next) => {
@@ -37,7 +38,27 @@ offersRouter.get('/:id', async (req, res, next) => {
 })
 
 
-offersRouter.post('/', authentication, adminAuthentication, async (req, res, next) => {
+offersRouter.post('/', [
+     check('titulo', 'El campo "titulo" es requerido').isString().trim().not().isEmpty(),
+     check('descripcion', 'El campo "descripcion" es requerido y tiene un minimo de 10 caracteres y máximo 250').isString().trim().isLength({ min: 10, max: 250 }),
+     check('porcentajeDescuento', 'El campo "porcentajeDescuento" es requerido y debe ser un número entero entre 1 y 100').not().isEmpty().isInt({ min: 1, max: 100 }),
+     check('productos', 'El campo productos es requerido y debe ser un array con la forma [{id: 1, cantidad: 2}]').isArray({ min: 1 }).custom(productos => {
+          let res;
+          res = productos.filter(e => {
+               return (typeof e !== "object") || !e.id || !e.cantidad;
+          })
+
+          return res.length === 0;
+     }),
+], authentication, adminAuthentication, async (req, res, next) => {
+     // Validaciones de express-validator
+     const errors = validationResult(req);
+
+     if (!errors.isEmpty()) {
+          return next({ status: 400, errors });
+     }
+
+     // Si no hay errores, continúo
      const { titulo, descripcion, porcentajeDescuento, productos } = req.body;
 
      let result = await createOferta(titulo, descripcion, porcentajeDescuento, productos);
@@ -51,11 +72,39 @@ offersRouter.post('/', authentication, adminAuthentication, async (req, res, nex
 // Esta ruta me permite cambiar el titulo, descripcion, porcentajeDescuento o estado
 // De los productos de esta oferta no me deja modificar mas que la cantidad
 // Si no le paso productos funciona igual
-offersRouter.put('/:id', authentication, adminAuthentication, async (req, res, next) => {
+offersRouter.put('/:id', [
+     check('titulo', 'El campo "titulo" es requerido').isString().trim().not().isEmpty(),
+     check('descripcion', 'El campo "descripcion" es requerido y tiene un minimo de 10 caracteres y máximo 250').isString().trim().isLength({ min: 10, max: 250 }),
+     check('porcentajeDescuento', 'El campo "porcentajeDescuento" es requerido y debe ser un número entero entre 1 y 100').not().isEmpty().isInt({ min: 1, max: 100 }),
+     check('estado', 'El campo "estado" es requerido y puede tomar los valores de "ACTIVA" o "INACTIVA"').trim().custom(value => [ACTIVA, INACTIVA].includes(value)).optional(),
+     check('productos', 'El campo productos es requerido y debe ser un array con la forma [{id: 1, cantidad: 2}]').isArray({ min: 1 }).custom(productos => {
+          let res;
+          res = productos.filter(e => {
+               return (typeof e !== "object") || !e.id || !e.cantidad;
+          })
+
+          return res.length === 0;
+     }).optional(),
+], authentication, adminAuthentication, async (req, res, next) => {
+     // Validaciones de express-validator
+     const errors = validationResult(req);
+
+     if (!errors.isEmpty()) {
+          return next({ status: 400, errors });
+     }
+
+     // Si no hay errores, continúo
      const { titulo, descripcion, porcentajeDescuento, estado, productos } = req.body;
      const { id } = req.params;
 
-     let result = await updateOferta(id, titulo, descripcion, porcentajeDescuento, estado, productos);
+     let result = await updateOferta(
+          id,
+          titulo,
+          descripcion,
+          porcentajeDescuento,
+          estado,
+          productos
+     );
 
      if (result.error) return next(result.error);
 
@@ -63,7 +112,19 @@ offersRouter.put('/:id', authentication, adminAuthentication, async (req, res, n
 })
 
 
-offersRouter.put('/add/:ofertaId', authentication, adminAuthentication, async (req, res, next) => {
+offersRouter.put('/add/:ofertaId', [
+     check('producto', 'El campo producto es requerido y debe ser un objeto de la forma {id: 1, cantidad: 2}').isObject().custom(e => {
+          return e.id && e.cantidad;
+     }),
+], authentication, adminAuthentication, async (req, res, next) => {
+     // Validaciones de express-validator
+     const errors = validationResult(req);
+
+     if (!errors.isEmpty()) {
+          return next({ status: 400, errors });
+     }
+
+     // Si no hay errores, continúo
      const { producto } = req.body;
      const { ofertaId } = req.params;
 
@@ -75,7 +136,17 @@ offersRouter.put('/add/:ofertaId', authentication, adminAuthentication, async (r
 })
 
 
-offersRouter.put('/remove/:ofertaId', authentication, adminAuthentication, async (req, res, next) => {
+offersRouter.put('/remove/:ofertaId', [
+     check('productoId', 'El campo productoId es un valor numérico requerido').trim().not().isEmpty().isInt({ min: 0 }),
+], authentication, adminAuthentication, async (req, res, next) => {
+     // Validaciones de express-validator
+     const errors = validationResult(req);
+
+     if (!errors.isEmpty()) {
+          return next({ status: 400, errors });
+     }
+
+     // Si no hay errores, continúo
      const { productoId } = req.body;
      const { ofertaId } = req.params;
 

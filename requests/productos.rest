@@ -53,7 +53,7 @@ Content-Type: application/json
 {
    "title": "Edit",
    "price": 12.5,
-   "description": "Edit",
+   "description": "Edit debo de ser una descripción más larga",
    "category": 4,
    "image": "edit.png",
    "cantidad": 10

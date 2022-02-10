@@ -3,13 +3,21 @@ const { CLAVE_PRIVADA } = process.env;
 const stripe = new Stripe(CLAVE_PRIVADA);
 const { Pedido } = require("../db");
 const { NOMBRE_ECOMMERCE } = process.env;
+const { validationResult } = require('express-validator');
 
 async function pagosPost(req, res, next) {
-  // Destructuramos los atributos que recibimos por body
-  const { transaccionId, pedidoId } = req.body;
 
-  // console.log(req.body)
   try {
+    // Validaciones de express-validator
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return next({ status: 400, errors });
+    }
+
+    // Si no hay errores, continúo
+    // Destructuramos los atributos que recibimos por body
+    const { transaccionId, pedidoId } = req.body;
     // Traemos el pedido para generar una descripción y obtener el precio de la transacción
     let pedido = await Pedido.findByPk(pedidoId);
 

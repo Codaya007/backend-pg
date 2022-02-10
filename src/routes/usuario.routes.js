@@ -1,9 +1,10 @@
 require("dotenv").config();
-const { Router, response } = require("express");
+const { Router, res } = require("express");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs"); //encriptar contraseña
 const { JWT_SECRET } = process.env;
 const gravatar = require("gravatar");
+const { check, validationResult } = require('express-validator');
 
 const userRouter = Router();
 
@@ -15,7 +16,25 @@ const { authentication } = require("../middlewares");
 // @route POST user/register
 // @desc Registrar Usuarios
 // @access Public
-userRouter.post("/register", async (request, response, next) => {
+userRouter.post("/register", [
+  check('nombre', 'Incluya un "nombre" valido').isString().trim().not().isEmpty(),
+  check('usuario', 'Incluya un "usuario" valido').isString().trim().not().isEmpty(),
+  check('contrasena', 'Incluya una contraseña válida').isString().trim().not().isEmpty(),
+  check('email', 'Incluya un email válido').isEmail().exists(),
+  check('pais', 'Incluya un país válido').isString().trim().not().isEmpty(),
+  check('provincia', 'Incluya una provincia válida').isString().trim().not().isEmpty(),
+  check('direccion', 'Incluya una direccion válida').isString().trim().not().isEmpty(),
+  check('telefono', 'El campo telefono es requerido').isString().not().isEmpty(),
+  check('telefono', 'Mínimo 8 caracteres').isLength({ min: 8 }),
+], async (req, res, next) => {
+  // Validaciones de express-validator
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return next({ status: 400, errors });
+  }
+
+  // Si no hay errores, continúo
   const {
     nombre,
     usuario,
@@ -25,12 +44,7 @@ userRouter.post("/register", async (request, response, next) => {
     provincia,
     direccion,
     telefono,
-  } = request.body;
-
-  // Verifico si el body tiene la información requerida
-  if (!nombre || !usuario || !contrasena) {
-    next({ status: 401, message: "Campos faltantes" });
-  }
+  } = req.body;
 
   try {
     let user = await Usuario.findOne({ where: { email } });
@@ -88,7 +102,7 @@ userRouter.post("/register", async (request, response, next) => {
       },
       (err, token) => {
         if (err) throw err;
-        response.status(201).json({ token });
+        res.status(201).json({ token });
       }
     );
   } catch (err) {
@@ -100,8 +114,19 @@ userRouter.post("/register", async (request, response, next) => {
 // @route POST user/login
 // @desc Logear un usuario
 // @access Public
-userRouter.post("/login", async (request, response, next) => {
-  const { email, contrasena } = request.body;
+userRouter.post("/login", [
+  check('email', 'Incluya un email válido').isEmail().exists(),
+  check('contrasena', 'Incluya una contraseña válida').isString().exists()
+], async (req, res, next) => {
+  // Validaciones de express-validator
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return next({ status: 400, errors });
+  }
+
+  // Si no hay errores, continúo
+  const { email, contrasena } = req.body;
 
   if (!email || !contrasena) {
     return next({
@@ -137,7 +162,7 @@ userRouter.post("/login", async (request, response, next) => {
       },
       (err, token) => {
         if (err) throw err;
-        return response.json({ token });
+        return res.json({ token });
       }
     );
   } catch (err) {
@@ -149,16 +174,16 @@ userRouter.post("/login", async (request, response, next) => {
 // @route GET api/user
 // @desc Información del usuario
 // @access Private
-userRouter.get("/", authentication, async (request, response, next) => {
+userRouter.get("/", authentication, async (req, res, next) => {
   try {
-    let user = await Usuario.findByPk(request.usuario.id);
+    let user = await Usuario.findByPk(req.usuario.id);
 
     user && (user = user.toJSON());
 
     // le borramos la contraseña
     delete user.contrasena;
 
-    response.json(user);
+    res.json(user);
   } catch (err) {
     console.log(err);
     next({ status: 500 });
@@ -170,7 +195,25 @@ userRouter.get("/", authentication, async (request, response, next) => {
 // @route PUT user/update/
 // @desc Actualizar los datos de un usuario
 // @access Private
-userRouter.put("/update", authentication, async (request, response, next) => {
+userRouter.put("/update", [
+  check('id', 'Incluya un "id" valido').isInt({ min: 1 }),
+  check('nombre', 'Incluya un "nombre" valido').isString().trim().not().isEmpty(),
+  check('usuario', 'Incluya un "usuario" valido').isString().trim().not().isEmpty(),
+  check('contrasena', 'Incluya una contraseña válida').isString().trim().not().isEmpty(),
+  check('email', 'Incluya un email válido').isEmail().exists(),
+  check('pais', 'Incluya un país válido').isString().trim().not().isEmpty(),
+  check('provincia', 'Incluya una provincia válida').isString().trim().not().isEmpty(),
+  check('direccion', 'Incluya una direccion válida').isString().trim().not().isEmpty(),
+  check('telefono', 'Incluya un telefono válido').isString().isLength({ min: 8 }),
+], authentication, async (req, res, next) => {
+  // Validaciones de express-validator
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return next({ status: 400, errors });
+  }
+
+  // Si no hay errores, continúo
   const {
     id,
     nombre,
@@ -181,7 +224,7 @@ userRouter.put("/update", authentication, async (request, response, next) => {
     provincia,
     direccion,
     telefono,
-  } = request.body;
+  } = req.body;
 
   if (!id) return next({ status: 400, message: "El id es Requerido" });
   let avata = gravatar.url(email, {
@@ -210,11 +253,11 @@ userRouter.put("/update", authentication, async (request, response, next) => {
       }
     );
     if (UserUpdate)
-      return response
+      return res
         .status(200)
         .json({ message: "Los Datos fueron Actualizados" });
 
-    return response.status(203).json({ message: "Algo Sucedio" });
+    return res.status(203).json({ message: "Algo Sucedio" });
   } catch (error) {
     return next({});
   }

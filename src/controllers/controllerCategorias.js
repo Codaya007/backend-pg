@@ -1,9 +1,18 @@
 const { Sequelize } = require("sequelize");
 const Op = Sequelize.Op;
 const { Categoria } = require("../db");
+const { validationResult } = require('express-validator');
 
 async function categoriaPost(req, res, next) {
   try {
+    // Validaciones de express-validator
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return next({ status: 400, errors });
+    }
+
+    // Si no hay errores, continúo
     const { nombre } = req.body;
 
     const valdidateact = await Categoria.findOne({
@@ -35,6 +44,14 @@ async function categoriaPost(req, res, next) {
 
 async function categoriaUpdate(req, res, next) {
   try {
+    // Validaciones de express-validator
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return next({ status: 400, errors });
+    }
+
+    // Si no hay errores, continúo
     const { id, nombre } = req.body;
 
     const UpdateCateg = await Categoria.update({
@@ -92,8 +109,17 @@ async function getAllCategorias(req, res, next) {
     next({});
   }
 }
+
 async function categoriaDelete(req, res, next) {
   try {
+    // Validaciones de express-validator
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return next({ status: 400, errors });
+    }
+
+    // Si no hay errores, continúo
     const { id } = req.body;
 
     const UpdateCateg = await Categoria.destroy(
@@ -102,7 +128,7 @@ async function categoriaDelete(req, res, next) {
     if (!UpdateCateg) {
       return next({
         status: 404,
-        message: 'No data found'
+        message: 'Categoría no encontrada'
       });
     }
     res.json({

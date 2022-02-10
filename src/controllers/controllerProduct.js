@@ -1,6 +1,7 @@
 const { Sequelize } = require("sequelize");
 const Op = Sequelize.Op;
 const { Producto, Categoria } = require('../db')
+const { validationResult } = require('express-validator');
 
 const mapProduct = (foundedProduct) => {
   foundedProduct = foundedProduct.toJSON()
@@ -161,6 +162,14 @@ const deleteProducto = async (id) => {
 
 async function updateRateProducto(req, res, next) {
   try {
+    // Validaciones de express-validator
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return next({ status: 400, errors });
+    }
+
+    // Si no hay errores continúo
     const { id, rate } = req.body;
 
     let producto = await Producto.findByPk(id);
