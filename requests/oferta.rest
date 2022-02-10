@@ -49,7 +49,7 @@ x-auth-token: {{tokenAdmin}}
 Content-Type: application/json
 
 {
-   "titulo": "Oferta erronea", 
+   "titulo": "Oferta", 
    "descripcion": "Obten el 3% de descuento en tus productos favoritos",
    "porcentajeDescuento": 3, 
    "productos": [
@@ -57,4 +57,119 @@ Content-Type: application/json
       {"id": 34, "cantidad":30 }, 
       {"id": 100, "cantidad":30} 
    ]
+}
+
+###
+PUT {{baseUrl}}/offers/1 HTTP/1.1
+x-auth-token: {{tokenAdmin}}
+Content-Type: application/json
+
+{
+   "titulo": "Edit", 
+   "descripcion": "Edit",
+   "porcentajeDescuento": 5, 
+   "productos": [
+      {"id": 34, "cantidad":7 }
+   ]
+}
+
+###
+PUT {{baseUrl}}/offers/2 HTTP/1.1
+x-auth-token: {{tokenAdmin}}
+Content-Type: application/json
+
+{
+   "titulo": "Edit", 
+   "descripcion": "Edit",
+   "porcentajeDescuento": 5
+}
+
+###
+PUT {{baseUrl}}/offers/200 HTTP/1.1
+x-auth-token: {{tokenAdmin}}
+Content-Type: application/json
+
+{
+   "titulo": "aksjkajsk", 
+   "descripcion": "Edit",
+   "porcentajeDescuento": 5
+}
+
+###
+PUT {{baseUrl}}/offers/add/1 HTTP/1.1
+x-auth-token: {{tokenAdmin}}
+Content-Type: application/json
+
+{
+   "producto": {
+      "id": 1,
+      "cantidad": 4
+   }
+}
+
+### peticion erronea debería responder con 400
+PUT {{baseUrl}}/offers/add/1 HTTP/1.1
+x-auth-token: {{tokenAdmin}}
+Content-Type: application/json
+
+{
+   "producto": {
+      "id": 7,
+      "cantidad": 4
+   }
+}
+
+### Quitar un producto de una oferta
+PUT {{baseUrl}}/offers/remove/7 HTTP/1.1
+x-auth-token: {{tokenAdmin}}
+Content-Type: application/json
+
+{
+   "productoId": 1
+}
+
+### peticion erronea debería responder con 400
+PUT {{baseUrl}}/offers/add/1 HTTP/1.1
+x-auth-token: {{tokenAdmin}}
+Content-Type: application/json
+
+{
+   "producto": {
+      "id": 45,
+      "cantidad": 4
+   }
+}
+
+
+### peticion erronea debería responder con 404
+PUT {{baseUrl}}/offers/add/100 HTTP/1.1
+x-auth-token: {{tokenAdmin}}
+Content-Type: application/json
+
+{
+   "producto": {
+      "id": 5,
+      "cantidad": 4
+   }
+}
+
+###
+PUT {{baseUrl}}/offers/remove/100 HTTP/1.1
+x-auth-token: {{tokenAdmin}}
+Content-Type: application/json
+
+{
+   "producto": {
+      "id": 5,
+      "cantidad": 4
+   }
+}
+
+###
+PUT {{baseUrl}}/offers/remove/1 HTTP/1.1
+x-auth-token: {{tokenAdmin}}
+Content-Type: application/json
+
+{
+   "productoId": 23
 }
