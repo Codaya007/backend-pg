@@ -10,6 +10,11 @@ module.exports = (sequelize, DataTypes) => {
          type: DataTypes.INTEGER,
          allowNull: false,
       },
+      cantidad: {
+         type: DataTypes.INTEGER,
+         allowNull: false,
+         defaultValue: 5
+      },
    }, {
       timestamps: false
    });

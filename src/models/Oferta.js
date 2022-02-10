@@ -26,11 +26,6 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       defaultValue: ACTIVA
     },
-    cantidad: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: 1
-    },
   }, {
     timestamps: false
   });
