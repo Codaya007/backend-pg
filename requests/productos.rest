@@ -65,7 +65,7 @@ Content-Type: application/json
 
 {
    "id":1,
-   "rate": 5,
+   "rate": 5
    
 }
 
