@@ -5,7 +5,7 @@
 GET {{baseUrl}} HTTP/1.1
 
 ### Obteniendo un producto por id
-GET {{baseUrl}}/190 HTTP/1.1
+GET {{baseUrl}}/5 HTTP/1.1
 
 ###
 GET {{baseUrl}}/1 HTTP/1.1
@@ -42,8 +42,6 @@ Content-Type: application/json
    "description": "Soy un nuevo producto",
    "category": 3,
    "image": "fake.png",
-   "rate": 3.5,
-   "count": 35,
    "cantidad": 20
 }
 
@@ -58,9 +56,27 @@ Content-Type: application/json
    "description": "Edit",
    "category": 4,
    "image": "edit.png",
-   "rate": 2,
-   "count": 10,
    "cantidad": 10
+}
+
+###
+PUT {{baseUrl}}/rate HTTP/1.1
+x-auth-token: {{tokenAdmin}}
+Content-Type: application/json
+
+{
+   "id":1,
+   "rate": 5
+}
+
+###
+PUT {{baseUrl}}/rate HTTP/1.1
+x-auth-token: {{tokenAdmin}}
+Content-Type: application/json
+
+{
+   "id":21,
+   "rate": 3.8
 }
 
 ### 

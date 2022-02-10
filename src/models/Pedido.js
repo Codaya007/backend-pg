@@ -15,12 +15,26 @@ module.exports = (sequelize, DataTypes) => {
          allowNull: false,
          defaultValue: PENDIENTE
       },
+      pagado: {
+         type: DataTypes.BOOLEAN,
+         allowNull: false,
+         defaultValue: false
+      },
       total: {
          type: DataTypes.DOUBLE,
          allowNull: false,
       },
+      fechaCreacion: {
+         type: DataTypes.DATE,
+         get() {
+            return new Date(this.getDataValue('fechaCreacion'));
+         },
+         set(fechaCreacion) {
+            this.setDataValue('fechaCreacion', fechaCreacion.toISOString().split('T')[0])
+         }
+      }
    }, {
-      timestamps: true
+      timestamps: false
    });
 
 

@@ -19,7 +19,7 @@ categorRouter.get('/', getAllCategorias);
 
 
 // @route UPDATE categories/
-// @desc Eliminar una categoría por id recibido por body
+// @desc Actualizar una categoría por id recibido por body
 // @access Private Admin
 categorRouter.put('/update', authentication, adminAuthentication, categoriaUpdate);
 

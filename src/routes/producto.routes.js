@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const { getAllProductos, getAllProductosByCategory, getProductoById, postProducto, deleteProducto, putProducto } = require('../controllers/controllerProduct')
+const { updateRateProducto, getAllProductos, getAllProductosByCategory, getProductoById, postProducto, deleteProducto, putProducto } = require('../controllers/controllerProduct')
 const productRouter = Router();
 
 // Requerimos el middleware de autenticación
@@ -36,7 +36,7 @@ productRouter.get('/', async (req, res, next) => {
 // @desc Obtener la información de todos los productos de una categoria
 // @access Public
 productRouter.get('/category/:categoriaId', async (req, res, next) => {
-    let { categoriaId = null } = req.params;
+    let { categoriaId } = req.params;
 
     const get = await getAllProductosByCategory(categoriaId);
     if (get.error) return next(get.error);
@@ -50,33 +50,41 @@ productRouter.get('/category/:categoriaId', async (req, res, next) => {
 // @desc Crear un nuevo producto con la información raída por body
 // @access Private Admin
 productRouter.post('/', authentication, adminAuthentication, async (req, res, next) => {
-    const { title, price, description, category, image, rate, count, cantidad } = req.body
+    const { title, price, description, category, image, cantidad } = req.body
 
-    let post = await postProducto(title, price, description, category, image, rate, count, cantidad);
+    let post = await postProducto(title, price, description, category, image, cantidad);
     if (post.error) return next(post.error);
 
     res.status(201).json(post);
 })
 
 
+// @route PUT productos/rate
+// @desc Actualizar el rate y count de un producto con id recibido por body
+// @access Private Usuario
+productRouter.put('/rate', authentication, updateRateProducto);
+
+
 // @route PUT products/:id
 // @desc Actualiza un nuevo producto por id
 // @access Private Admin
 productRouter.put('/:id', authentication, adminAuthentication, async (req, res, next) => {
-    const { title, price, description, category, image, rate, count, cantidad } = req.body;
+    const { title, price, description, category, image, cantidad } = req.body;
     const { id } = req.params;
 
-    let put = await putProducto(title, price, description, category, image, rate, count, cantidad, id);
+    let put = await putProducto(title, price, description, category, image, cantidad, id);
     if (put.error) return next(put.error);
 
     res.json(put);
 })
 
 
+
+
 // @route DELETE products/:id
 // @desc Elimina un producto por id
 // @access Private Admin
-productRouter.delete('/:id', authentication, adminAuthentication, async (req, res) => {
+productRouter.delete('/:id', authentication, adminAuthentication, async (req, res, next) => {
     const { id } = req.params;
 
     let destroy = await deleteProducto(id);

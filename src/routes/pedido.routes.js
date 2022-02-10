@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const { getAllPedidos, getPedidosByUsuario, createPedido } = require('../controllers/controllerPedido');
+const { getAllPedidos, getPedidosByUsuario, createPedido, updateStatusPedido, deletePedido } = require('../controllers/controllerPedido');
 const { Usuario } = require('../db');
 const pedidoRouter = Router();
 
@@ -14,9 +14,9 @@ pedidoRouter.get('/',
    authentication,
    adminAuthentication,
    async (req, res, next) => {
-      // const { date } = req.query;
+      const { desde, hasta } = req.query;
 
-      let get = await getAllPedidos();
+      let get = await getAllPedidos(desde, hasta);
       if (get.error) return next(get.error);
 
       return res.json(get);
@@ -67,7 +67,40 @@ pedidoRouter.post('/',
 
       res.status(400).end();
    }
-)
+);
 
+
+// @route PUT pedidos/:idPedido
+// @desc Actualizar el estado de un pedido
+// @access Private Admin
+pedidoRouter.put('/:pedidoId',
+   authentication,
+   adminAuthentication,
+   async (req, res, next) => {
+      const { pedidoId } = req.params;
+      const { status } = req.body;
+
+      let get = await updateStatusPedido(pedidoId, status);
+
+      if (get.error) return next(get.error);
+
+      return res.json(get);
+   }
+);
+
+
+
+// @route PUT pedidos/:idPedido
+// @desc Actualizar el estado de un pedido
+// @access Private Admin
+pedidoRouter.delete('/:pedidoId', authentication, async (req, res, next) => {
+   const { pedidoId } = req.params;
+
+   const deleted = await deletePedido(pedidoId, req.usuario.id);
+
+   if (deleted.error) return next(deleted.error);
+
+   res.status(204).end();
+})
 
 module.exports = pedidoRouter;
