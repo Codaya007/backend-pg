@@ -47,7 +47,7 @@ Object.keys(models).forEach((modelName) => {
 
 sequelize.models = models;
 
-const { Usuario, Categoria, LineaDePedido, Pedido, Producto } =
+const { Usuario, Categoria, LineaDePedido, Pedido, Producto, Offers, Ofertas, OfertaProducto } =
   sequelize.models;
 module.exports = {
   //...sequelize.models,
@@ -56,5 +56,8 @@ module.exports = {
   LineaDePedido,
   Pedido,
   Producto,
+  Offers,
+  Ofertas,
+  OfertaProducto,
   conn: sequelize, // para importar la conexión { conn } = require('./db.js');
 };
