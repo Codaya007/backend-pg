@@ -66,8 +66,9 @@ Content-Type: application/json
 
 {
    "titulo": "Edit", 
-   "descripcion": "Edit",
+   "descripcion": "Edit debe ser una descripcion de al menos 10 caracteres",
    "porcentajeDescuento": 5, 
+   "estado": "INACTIVA",
    "productos": [
       {"id": 34, "cantidad":7 }
    ]
@@ -80,7 +81,8 @@ Content-Type: application/json
 
 {
    "titulo": "Edit", 
-   "descripcion": "Edit",
+   "descripcion": "Edit descripcion larga",
+   "estado": "ACTIVA",
    "porcentajeDescuento": 5
 }
 

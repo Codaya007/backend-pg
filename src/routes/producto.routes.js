@@ -1,6 +1,7 @@
 const { Router } = require('express');
 const { updateRateProducto, getAllProductos, getAllProductosByCategory, getProductoById, postProducto, deleteProducto, putProducto } = require('../controllers/controllerProduct')
 const productRouter = Router();
+const { check, validationResult } = require('express-validator');
 
 // Requerimos el middleware de autenticación
 const { authentication, adminAuthentication } = require("../middlewares");
@@ -49,7 +50,22 @@ productRouter.get('/category/:categoriaId', async (req, res, next) => {
 // @route POST products/
 // @desc Crear un nuevo producto con la información raída por body
 // @access Private Admin
-productRouter.post('/', authentication, adminAuthentication, async (req, res, next) => {
+productRouter.post('/', [
+    check('title', 'El campo "titulo" es requerido').isString().trim().not().isEmpty(),
+    check('image', 'El campo "image" es requerido').isString().trim().not().isEmpty(),
+    check('description', 'El campo "description" es requerido y tiene un minimo de 10 caracteres y máximo 250').isString().trim().isLength({ min: 10, max: 250 }),
+    check('price', 'El campo "price" es requerido y debe ser un número').not().isEmpty().isNumeric({ min: 1 }),
+    check('category', 'El campo "category" es requerido y debe ser un id').isInt({ min: 1 }),
+    check('cantidad', 'El campo "cantidad" es requerido y debe ser un número entero').isInt({ min: 1 }),
+], authentication, adminAuthentication, async (req, res, next) => {
+    // Validaciones de express-validator
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return next({ status: 400, errors });
+    }
+
+    // Si no hay errores, continúo
     const { title, price, description, category, image, cantidad } = req.body
 
     let post = await postProducto(title, price, description, category, image, cantidad);
@@ -62,13 +78,31 @@ productRouter.post('/', authentication, adminAuthentication, async (req, res, ne
 // @route PUT productos/rate
 // @desc Actualizar el rate y count de un producto con id recibido por body
 // @access Private Usuario
-productRouter.put('/rate', authentication, updateRateProducto);
+productRouter.put('/rate', [
+    check('rate', 'El campo "rate" es requerido y debe ser un número entero o flotante entre 0 y 5').isFloat({ min: 0, max: 5 }),
+    check('id', 'El campo "id" es requerido y debe ser un número entero').isInt({ min: 1 }),
+], authentication, updateRateProducto);
 
 
 // @route PUT products/:id
 // @desc Actualiza un nuevo producto por id
 // @access Private Admin
-productRouter.put('/:id', authentication, adminAuthentication, async (req, res, next) => {
+productRouter.put('/:id', [
+    check('title', 'El campo "titulo" es requerido').isString().trim().not().isEmpty(),
+    check('image', 'El campo "image" es requerido').isString().trim().not().isEmpty(),
+    check('description', 'El campo "description" es requerido y tiene un minimo de 10 caracteres y máximo 250').isString().trim().isLength({ min: 10, max: 250 }),
+    check('price', 'El campo "price" es requerido y debe ser un número').not().isEmpty().isNumeric({ min: 1 }),
+    check('category', 'El campo "category" es requerido y debe ser un id').isInt({ min: 1 }),
+    check('cantidad', 'El campo "cantidad" es requerido y debe ser un número entero').isInt({ min: 1 }),
+], authentication, adminAuthentication, async (req, res, next) => {
+    // Validaciones de express-validator
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return next({ status: 400, errors });
+    }
+
+    // Si no hay errores, continúo
     const { title, price, description, category, image, cantidad } = req.body;
     const { id } = req.params;
 
