@@ -169,7 +169,7 @@ async function updateRateProducto(req, res, next) {
     // Lo paso a JSON para tener solo los datos que me interesan
     producto = producto.toJSON();
 
-    console.log(producto);
+    // console.log(producto);
 
     // Actualizo el producto
     await Producto.update({

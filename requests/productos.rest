@@ -58,6 +58,7 @@ Content-Type: application/json
    "image": "edit.png",
    "cantidad": 10
 }
+
 ###
 PUT {{baseUrl}}/rate HTTP/1.1
 x-auth-token: {{tokenAdmin}}
@@ -66,7 +67,16 @@ Content-Type: application/json
 {
    "id":1,
    "rate": 5
-   
+}
+
+###
+PUT {{baseUrl}}/rate HTTP/1.1
+x-auth-token: {{tokenAdmin}}
+Content-Type: application/json
+
+{
+   "id":21,
+   "rate": 3.8
 }
 
 ### 
