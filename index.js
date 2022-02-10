@@ -5,7 +5,7 @@ const { PORT } = process.env;
 const LoadDb = require('./src/helpers/loadDb')
 
 // Syncing all the models at once.
-conn.sync({ force: true })
+conn.sync({ force: false })
   .then(() => {
     server.listen(PORT, () => {
       console.log(`Listening at port ${PORT}`);
