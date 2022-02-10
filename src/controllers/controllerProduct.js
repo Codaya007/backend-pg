@@ -161,21 +161,24 @@ const deleteProducto = async (id) => {
 
 async function updateRateProducto(req, res, next) {
   try {
-    const { id, rate,count } = req.body;
+    const { id, rate } = req.body;
 
-    const UpdateCateg = await Producto.update({
-      rate:rate,
-      count:count+1
+    let producto = await Producto.findByPk(id);
+
+    if (!producto) return next({ status: 400, message: "El id del producto no es válido" });
+    // Lo paso a JSON para tener solo los datos que me interesan
+    producto = producto.toJSON();
+
+    // console.log(producto);
+
+    // Actualizo el producto
+    await Producto.update({
+      // Para que solo tenga un decimal
+      rate: Math.round(((rate + producto.rate) / 2) * 10) / 10,
+      count: producto.count + 1
     },
       { where: { id } });
 
-
-    if (!UpdateCateg) {
-      return next({
-        status: 404,
-        message: 'No data found'
-      });
-    }
     res.json({
       message: 'Los datos se actualizaron correctamente'
     });
