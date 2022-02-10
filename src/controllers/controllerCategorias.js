@@ -66,7 +66,10 @@ async function getAllCategorias(req, res, next) {
     if (!nombre) {
       // const ProductAll = await Producto.findAll({ include: Categoria });
       const CategAll = await Categoria.findAll({});
-      res.send(CategAll);
+
+      if (!CategAll.length) return next({ status: 404, message: "Aún no hay categorías registradas" });
+
+      res.json(CategAll);
     } else {
       const CategQuery = await Categoria.findAll({
         where: {
@@ -77,15 +80,12 @@ async function getAllCategorias(req, res, next) {
         // include: Categoria
       });
 
-      if (!CategQuery[0]) {
-        console.log("error");
+      if (!CategQuery[0]) return next({
+        status: 404,
+        message: `No se encuentra ninguna Categoria con el nombre '${nombre}'`,
+      });
 
-        return next({
-          status: 404,
-          message: `No se encuentra ninguna Categoria con el nombre '${nombre}'`,
-        });
-      }
-      return res.send(CategQuery);
+      return res.json(CategQuery);
     }
   } catch (error) {
     console.log(err);
