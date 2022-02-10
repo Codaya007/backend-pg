@@ -59,14 +59,13 @@ Content-Type: application/json
    "cantidad": 10
 }
 ###
-Put {{baseUrl}}/rate/ HTTP/1.1
+Put {{baseUrl}}/rate HTTP/1.1
 x-auth-token: {{tokenAdmin}}
 Content-Type: application/json
 
 {
-   "id":5,
-   "rate": 10,
-   "count": 20
+   "id": 21,
+   "rate": 3.8
 }
 
 ### 
