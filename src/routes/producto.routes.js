@@ -78,10 +78,7 @@ productRouter.put('/:id', authentication, adminAuthentication, async (req, res, 
     res.json(put);
 })
 
-// @route UPDATE rate y count Productos/
-// @desc Actualizar una rate y count  por id recibido por body
-// @access Private Usuario
-productRouter.put('/rate',authentication, updateRateProducto);
+
 
 
 // @route DELETE products/:id
