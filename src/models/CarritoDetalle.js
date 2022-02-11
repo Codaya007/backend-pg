@@ -16,9 +16,5 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: "productoId",
     });
     //Relaciondo con Carrito (1:1)
-    CarritoDetalle.belongsTo(models.Carrito, {
-      sourceKey: "id",
-      foreignKey: "carritoId",
-    });
   };
 };

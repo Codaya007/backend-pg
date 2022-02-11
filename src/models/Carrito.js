@@ -15,5 +15,9 @@ module.exports = (sequelize, DataTypes) => {
       sourceKey: "id",
       foreignKey: "usuarioId",
     });
+    Carrito.hasMany(models.CarritoDetalle, {
+      sourceKey: "id",
+      foreignKey: "carritoId",
+    });
   };
 };

@@ -33,6 +33,21 @@ async function carritoPost(req, res, next) {
   }
 }
 
+async function carritoGet(req, res, next) {
+  const { usuarioId } = req.params;
+  if (!usuarioId) {
+    return res.status(400).json({ message: "data are requerid" });
+  }
+  const carrito = await Carrito.findOne({
+    include: [Usuario, CarritoDetalle],
+    where: { usuarioId },
+  });
+  if (carrito) {
+    return res.status(200).json(carrito);
+  }
+}
+
 module.exports = {
   carritoPost,
+  carritoGet,
 };
