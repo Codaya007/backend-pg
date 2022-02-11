@@ -5,6 +5,6 @@ const adminAuthentication = require("../middlewares/adminAuthentication");
 const authentication = require("../middlewares/authentication");
 const carritoRouter = Router();
 
-carritoRouter.post("/", authentication, carritoPost);
+carritoRouter.post("/", carritoPost);
 
 module.exports = carritoRouter;

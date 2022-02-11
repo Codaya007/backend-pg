@@ -6,7 +6,7 @@ const { types } = require("pg");
 module.exports = (sequelize, DataTypes) => {
   // defino el modelo
   const Carrito = sequelize.define("Carrito", {
-    cantidad: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 1 },
+    //cantidad: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 1 },
   });
 
   Carrito.associate = (models) => {
@@ -14,12 +14,6 @@ module.exports = (sequelize, DataTypes) => {
     Carrito.belongsTo(models.Usuario, {
       sourceKey: "id",
       foreignKey: "usuarioId",
-    });
-
-    // Relacionando con producto (N:M)
-    Carrito.belongsTo(models.Producto, {
-      sourceKey: "id",
-      foreignKey: "productoId",
     });
   };
 };
