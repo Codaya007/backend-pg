@@ -89,8 +89,8 @@ module.exports = {
          let total = Math.round(pedidoFinal.reduce((prev, current) => (current.price * current.cantidad) + prev, 0) * 100) / 100;
 
          // Ahora creo el pedido
-         let pedidoRealizado = await Pedido.create({ usuarioId: userId, total, fechaCreacion: new Date() });
-         pedidoRealizado = pedidoRealizado.toJSON();
+         let pedidoAux = await Pedido.create({ usuarioId: userId, total, fechaCreacion: new Date() });
+         let pedidoRealizado = pedidoAux.toJSON();
 
          // Ahora creo todas las líneas de pedidos
          await Promise.all(pedidoFinal.map((el) => {
@@ -115,18 +115,7 @@ module.exports = {
             });
          }));
 
-         // Cambio el campo price a precioUnitario
-         pedidoFinal = pedidoFinal.map(el => {
-            el.precioUnitario = el.price
-            el.idProducto = el.id;
-
-            delete el.price;
-            delete el.id;
-
-            return el;
-         });
-
-         return { estado: pedidoRealizado.status, productosComprados: pedidoFinal, totalCompra: total, pagado: false };
+         return mapPedido(pedidoAux);
       } catch (error) {
          console.log(error);
 
@@ -213,6 +202,20 @@ module.exports = {
          return { error: {} }
       }
    },
+
+   getPedidosById: async (pedidoId) => {
+      try {
+         let pedido = await Pedido.findByPk(pedidoId);
+
+         if (!pedido) return { error: { status: 404, message: "Pedido no encontrado" } };
+
+         return await mapPedido(pedido);
+      } catch (error) {
+         console.log(error);
+         return { error: {} }
+      }
+   },
+
    updateStatusPedido: async (idPedido, newStatus) => {
       try {
          await Pedido.update({
