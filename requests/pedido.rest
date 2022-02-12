@@ -1,4 +1,5 @@
 @baseUrl = http://localhost:5000
+@baseUrlApi = https://ecommerce-pg-henry.herokuapp.com
 
 ### Tiene que estar logueado para poder hacer peticiones en las rutas pedidos por ello tambien usamos la ruta user/register
 
@@ -68,24 +69,28 @@ Content-Type: application/json
    "status": "COMPLETADO"
 }
 
-### ruta pedidos/:userId
+### ruta pedidos/user/:userId
 ### Solo el usuario propietario puede acceder a sus propios pedidos y el admin a todos
 # Usuario 1 es admin, ya que se inicializa con el servidor
-GET {{baseUrl}}/pedidos/2 HTTP/1.1
+GET {{baseUrl}}/pedidos/user/2 HTTP/1.1
 x-auth-token: {{tokenAdmin}}
 
 ### El admin puede ver los pedidos de sus clientes
-GET {{baseUrl}}/pedidos/10 HTTP/1.1
+GET {{baseUrl}}/pedidos/user/10 HTTP/1.1
 x-auth-token: {{tokenAdmin}}
 
 ### Cuando pide su propia informacion se la entrega
-GET {{baseUrl}}/pedidos/6 HTTP/1.1
+GET {{baseUrl}}/pedidos/user/6 HTTP/1.1
 x-auth-token: {{tokenUno}}
 
 
 ### Cuando pide información de otro usuario le envía un error (403)
-GET {{baseUrl}}/pedidos/1 HTTP/1.1
+GET {{baseUrl}}/pedidos/user/1 HTTP/1.1
 x-auth-token: {{tokenUno}}
+
+### Obtener info de un pedido por id del pedido falta control ya que cualquier usuario registrado puede acceder
+GET {{baseUrl}}/pedidos/3 HTTP/1.1
+x-auth-token: {{tokenAdmin}}
 
 ### Voy a eliminar el pedido 1
 DELETE {{baseUrl}}/pedidos/1 HTTP/1.1

@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const { getAllPedidos, getPedidosByUsuario, createPedido, updateStatusPedido, deletePedido } = require('../controllers/controllerPedido');
+const { getAllPedidos, getPedidosByUsuario, createPedido, updateStatusPedido, deletePedido, getPedidosById } = require('../controllers/controllerPedido');
 const { Usuario } = require('../db');
 const pedidoRouter = Router();
 const { check, validationResult } = require('express-validator');
@@ -26,10 +26,10 @@ pedidoRouter.get('/',
 )
 
 
-// @route GET pedidos/:userId
+// @route GET pedidos/user/:userId
 // @desc Obtener todos los pedidos que ha realizado un usuario
 // @access Private
-pedidoRouter.get('/:userId',
+pedidoRouter.get('/user/:userId',
    authentication,
    async (req, res, next) => {
       const { userId } = req.params;
@@ -46,6 +46,22 @@ pedidoRouter.get('/:userId',
       }
 
       next({ status: 403, message: "No está autorizado para esta acción" });
+   }
+)
+
+// FALTA AÑADIR SEGURIDAD
+// @route GET pedidos/pedidoId
+// @desc Obtener un pedido por id
+// @access Private
+pedidoRouter.get('/:pedidoId',
+   authentication,
+   async (req, res, next) => {
+      const { pedidoId } = req.params;
+
+      let get = await getPedidosById(pedidoId);
+      if (get.error) return next(get.error);
+
+      return res.json(get);
    }
 )
 
