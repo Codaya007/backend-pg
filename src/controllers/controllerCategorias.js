@@ -1,9 +1,18 @@
 const { Sequelize } = require("sequelize");
 const Op = Sequelize.Op;
 const { Categoria } = require("../db");
+const { validationResult } = require('express-validator');
 
 async function categoriaPost(req, res, next) {
   try {
+    // Validaciones de express-validator
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return next({ status: 400, errors });
+    }
+
+    // Si no hay errores, continúo
     const { nombre } = req.body;
 
     const valdidateact = await Categoria.findOne({
@@ -35,6 +44,14 @@ async function categoriaPost(req, res, next) {
 
 async function categoriaUpdate(req, res, next) {
   try {
+    // Validaciones de express-validator
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return next({ status: 400, errors });
+    }
+
+    // Si no hay errores, continúo
     const { id, nombre } = req.body;
 
     const UpdateCateg = await Categoria.update({
@@ -66,7 +83,10 @@ async function getAllCategorias(req, res, next) {
     if (!nombre) {
       // const ProductAll = await Producto.findAll({ include: Categoria });
       const CategAll = await Categoria.findAll({});
-      res.send(CategAll);
+
+      if (!CategAll.length) return next({ status: 404, message: "Aún no hay categorías registradas" });
+
+      res.json(CategAll);
     } else {
       const CategQuery = await Categoria.findAll({
         where: {
@@ -77,23 +97,29 @@ async function getAllCategorias(req, res, next) {
         // include: Categoria
       });
 
-      if (!CategQuery[0]) {
-        console.log("error");
+      if (!CategQuery[0]) return next({
+        status: 404,
+        message: `No se encuentra ninguna Categoria con el nombre '${nombre}'`,
+      });
 
-        return next({
-          status: 404,
-          message: `No se encuentra ninguna Categoria con el nombre '${nombre}'`,
-        });
-      }
-      return res.send(CategQuery);
+      return res.json(CategQuery);
     }
   } catch (error) {
     console.log(err);
     next({});
   }
 }
+
 async function categoriaDelete(req, res, next) {
   try {
+    // Validaciones de express-validator
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return next({ status: 400, errors });
+    }
+
+    // Si no hay errores, continúo
     const { id } = req.body;
 
     const UpdateCateg = await Categoria.destroy(
@@ -102,7 +128,7 @@ async function categoriaDelete(req, res, next) {
     if (!UpdateCateg) {
       return next({
         status: 404,
-        message: 'No data found'
+        message: 'Categoría no encontrada'
       });
     }
     res.json({

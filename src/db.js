@@ -2,16 +2,26 @@ require("dotenv").config();
 const { Sequelize, DataTypes } = require("sequelize");
 const fs = require("fs");
 const path = require("path");
-const { DB_USER, DB_PASSWORD, DB_HOST, DB_NAME } = process.env;
+const { DB_USER, DB_PASSWORD, DB_HOST, DB_NAME, DB_PORT, DATABASE_URL, ENVIRONMENT } = process.env;
 
-const sequelize = new Sequelize(
-  `postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/${DB_NAME}`,
+const URL = ENVIRONMENT === "development" ? `postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}` : DATABASE_URL;
 
-  {
-    logging: false,
-    native: false, // lets Sequelize know we can use pg-native for ~30% more speed
-  }
-);
+const options = ENVIRONMENT === "development" ? {
+  logging: false,
+  native: false,
+} : {
+  logging: false,
+  native: false, // lets Sequelize know we can use pg-native for ~30% more speed
+  dialectOptions: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false
+    }
+  },
+};
+
+const sequelize = new Sequelize(URL, options);
+
 const basename = path.basename(__filename);
 
 const modelDefiners = [];
@@ -55,9 +65,11 @@ const {
   Producto,
   Carrito,
   CarritoDetalle,
+  Ofertas, 
+  OfertaProducto
 } = sequelize.models;
+
 module.exports = {
-  //...sequelize.models,
   Usuario,
   Categoria,
   LineaDePedido,
@@ -65,5 +77,7 @@ module.exports = {
   Producto,
   Carrito,
   CarritoDetalle,
+  Ofertas, 
+  OfertaProducto,
   conn: sequelize, // para importar la conexión { conn } = require('./db.js');
 };

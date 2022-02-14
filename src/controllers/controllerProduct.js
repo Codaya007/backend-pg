@@ -1,6 +1,7 @@
 const { Sequelize } = require("sequelize");
 const Op = Sequelize.Op;
 const { Producto, Categoria } = require('../db')
+const { validationResult } = require('express-validator');
 
 const mapProduct = (foundedProduct) => {
   foundedProduct = foundedProduct.toJSON()
@@ -98,11 +99,11 @@ const getAllProductosByCategory = async (categoriaId) => {
 }
 
 
-const postProducto = async (title, price, description, category, image, rate, count, cantidad) => {
+const postProducto = async (title, price, description, category, image, cantidad) => {
   try {
     let exist = await Producto.findOne({ where: { title } });
 
-    if (exist) return { error: { status: 400, message: "Ya existe un producto con ese nombre (title)" } };
+    if (exist) return { error: { status: 400, message: `Ya existe un producto con ese nombre: '${title}'` } };
 
     let createProduct = await Producto.create({
       title,
@@ -110,8 +111,6 @@ const postProducto = async (title, price, description, category, image, rate, co
       description,
       categoriaId: category,
       image,
-      rate,
-      count,
       cantidad
     });
 
@@ -123,9 +122,8 @@ const postProducto = async (title, price, description, category, image, rate, co
   }
 }
 
-const putProducto = async (title, price, description, category, image, rate, count, cantidad, id) => {
+const putProducto = async (title, price, description, category, image, cantidad, id) => {
   try {
-    // id = parseInt(id)
     let update = await Producto.update(
       {
         title: title,
@@ -133,23 +131,25 @@ const putProducto = async (title, price, description, category, image, rate, cou
         description: description,
         categoriaId: category, //categoryId almacena el id de la categoría a la que pertenece
         image: image,
-        rate: rate,
-        count: count,
         cantidad: cantidad
       },
       { where: { id } })
     return "Success update";
 
   } catch (error) {
+    console.log(error)
     return { error: {} };
-    console.log(error.message)
   }
 }
 
 const deleteProducto = async (id) => {
   try {
+    let dest = await Producto.findByPk(id);
+
+    if (!dest) return { error: { status: 404, message: "Id no válido" } };
+
     // console.log(id)
-    let dest = await Producto.destroy({
+    dest = await Producto.destroy({
       where: { id }
     })
 
@@ -160,13 +160,54 @@ const deleteProducto = async (id) => {
   }
 }
 
+async function updateRateProducto(req, res, next) {
+  try {
+    // Validaciones de express-validator
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return next({ status: 400, errors });
+    }
+
+    // Si no hay errores continúo
+    const { id, rate } = req.body;
+
+    let producto = await Producto.findByPk(id);
+
+    if (!producto) return next({ status: 400, message: "El id del producto no es válido" });
+    // Lo paso a JSON para tener solo los datos que me interesan
+    producto = producto.toJSON();
+
+    // console.log(producto);
+
+    // Actualizo el producto
+    await Producto.update({
+      // Para que solo tenga un decimal (cuando es la primera calificación no debe promediarse)
+      rate: parseFloat(producto.count) === 0 ? rate : Math.round(((rate + producto.rate) / 2) * 10) / 10,
+      count: producto.count + 1
+    },
+      { where: { id } });
+
+    res.json({
+      message: 'Los datos se actualizaron correctamente'
+    });
+
+  } catch (error) {
+    console.log(error)
+    next({})
+  }
+}
+
+
+
 module.exports = {
   getAllProductos,
   getProductoById,
   postProducto,
   deleteProducto,
   putProducto,
-  getAllProductosByCategory
+  getAllProductosByCategory,
+  updateRateProducto
 }
 
 

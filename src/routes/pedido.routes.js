@@ -1,10 +1,12 @@
 const { Router } = require('express');
-const { getAllPedidos, getPedidosByUsuario, createPedido } = require('../controllers/controllerPedido');
+const { getAllPedidos, getPedidosByUsuario, createPedido, updateStatusPedido, deletePedido, getPedidosById } = require('../controllers/controllerPedido');
 const { Usuario } = require('../db');
 const pedidoRouter = Router();
+const { check, validationResult } = require('express-validator');
 
 // Requerimos los middlewares de autenticación
 const { authentication, adminAuthentication } = require("../middlewares");
+const { PENDIENTE, COMPLETADO } = require('../data/constantes');
 
 
 // @route GET pedidos/
@@ -14,9 +16,9 @@ pedidoRouter.get('/',
    authentication,
    adminAuthentication,
    async (req, res, next) => {
-      // const { date } = req.query;
+      const { desde, hasta } = req.query;
 
-      let get = await getAllPedidos();
+      let get = await getAllPedidos(desde, hasta);
       if (get.error) return next(get.error);
 
       return res.json(get);
@@ -24,10 +26,10 @@ pedidoRouter.get('/',
 )
 
 
-// @route GET pedidos/:userId
+// @route GET pedidos/user/:userId
 // @desc Obtener todos los pedidos que ha realizado un usuario
 // @access Private
-pedidoRouter.get('/:userId',
+pedidoRouter.get('/user/:userId',
    authentication,
    async (req, res, next) => {
       const { userId } = req.params;
@@ -47,14 +49,46 @@ pedidoRouter.get('/:userId',
    }
 )
 
+// FALTA AÑADIR SEGURIDAD
+// @route GET pedidos/pedidoId
+// @desc Obtener un pedido por id
+// @access Private
+pedidoRouter.get('/:pedidoId',
+   authentication,
+   async (req, res, next) => {
+      const { pedidoId } = req.params;
+
+      let get = await getPedidosById(pedidoId);
+      if (get.error) return next(get.error);
+
+      return res.json(get);
+   }
+)
+
 
 // @route POST pedidos/
 // @desc Realizar un pedido
 // @access Private
-pedidoRouter.post('/',
+pedidoRouter.post('/', [
+   check('pedidos', 'El campo "pedidos" es requerido y debe ser un array con la forma [{productoId: 1, cantidad: 2}]').isArray({ min: 1 }).custom(pedidos => {
+      let res;
+      res = pedidos.filter(e => {
+         return (typeof e !== "object") || !e.productoId || !e.cantidad;
+      })
+
+      return res.length === 0;
+   })
+],
    authentication,
    async (req, res, next) => {
+      // Validaciones de express-validator
+      const errors = validationResult(req);
 
+      if (!errors.isEmpty()) {
+         return next({ status: 400, errors });
+      }
+
+      // Si no hay errores, continúo
       const { pedidos } = req.body;
 
       if (pedidos) {
@@ -67,7 +101,52 @@ pedidoRouter.post('/',
 
       res.status(400).end();
    }
-)
+);
 
+
+// @route PUT pedidos/:idPedido
+// @desc Actualizar el estado de un pedido
+// @access Private Admin
+pedidoRouter.put('/:pedidoId', [
+   check('status', `El campo "status" es requerido y debe ser igual a ${PENDIENTE} o ${COMPLETADO}`).isString().trim().custom(status =>
+      [PENDIENTE, COMPLETADO].includes(status)
+   ),
+],
+   authentication,
+   adminAuthentication,
+   async (req, res, next) => {
+      // Validaciones de express-validator
+      const errors = validationResult(req);
+
+      if (!errors.isEmpty()) {
+         return next({ status: 400, errors });
+      }
+
+      // Si no hay errores, continúo
+      const { pedidoId } = req.params;
+      const { status } = req.body;
+
+      let get = await updateStatusPedido(pedidoId, status);
+
+      if (get.error) return next(get.error);
+
+      return res.json(get);
+   }
+);
+
+
+
+// @route PUT pedidos/:idPedido
+// @desc Actualizar el estado de un pedido
+// @access Private Admin
+pedidoRouter.delete('/:pedidoId', authentication, async (req, res, next) => {
+   const { pedidoId } = req.params;
+
+   const deleted = await deletePedido(pedidoId, req.usuario.id);
+
+   if (deleted.error) return next(deleted.error);
+
+   res.status(204).end();
+})
 
 module.exports = pedidoRouter;
