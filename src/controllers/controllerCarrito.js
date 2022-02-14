@@ -1,5 +1,3 @@
-const { Sequelize } = require("sequelize");
-const Op = Sequelize.Op;
 const { Carrito, Usuario, CarritoDetalle, Producto } = require("../db");
 
 async function carritoPost(req, res, next) {
@@ -29,7 +27,8 @@ async function carritoPost(req, res, next) {
       .status(203)
       .json({ message: "El producto NO fue Registrado en el carrito" });
   } catch (error) {
-    return res.status(500).json({ error });
+    console.log(error);
+    return next({});
   }
 }
 
@@ -38,12 +37,19 @@ async function carritoGet(req, res, next) {
   if (!usuarioId) {
     return res.status(400).json({ message: "data are requerid" });
   }
-  const carrito = await Carrito.findOne({
-    include: [Usuario, CarritoDetalle],
-    where: { usuarioId },
-  });
-  if (carrito) {
-    return res.status(200).json(carrito);
+  try {
+    const carrito = await Carrito.findOne({
+      include: [Usuario, CarritoDetalle],
+      where: { usuarioId },
+    });
+    if (carrito) {
+      return res.status(200).json(carrito);
+    } else {
+      return next({ status: 404, message: "Carrito not founded" });
+    }
+  } catch (error) {
+    console.log(error);
+    return next({});
   }
 }
 
