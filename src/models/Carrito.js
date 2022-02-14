@@ -3,7 +3,7 @@ module.exports = (sequelize, DataTypes) => {
   // defino el modelo
   const Carrito = sequelize.define("Carrito", {
     //cantidad: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 1 },
-  });
+  }, { timestamps: false });
 
   Carrito.associate = (models) => {
     // Relacionando con Usuario   (1:1)
