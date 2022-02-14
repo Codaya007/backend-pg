@@ -2,7 +2,9 @@ const { Carrito, Usuario, CarritoDetalle, Producto } = require("../db");
 
 async function carritoPost(req, res, next) {
   try {
-    const { usuarioId, productoId } = req.body;
+    const { productoId, cantidad } = req.body;
+    const { id: usuarioId } = req.usuario;
+
     if (!usuarioId)
       return res.status(400).json({ message: "Los datos son requeridos" });
     const usuario = await Usuario.findOne({ where: { id: usuarioId } });
@@ -14,14 +16,12 @@ async function carritoPost(req, res, next) {
     });
 
     if (nuevoCarrito) {
-      const detalleCarrito = await CarritoDetalle.create({
+      await CarritoDetalle.create({
         carritoId: nuevoCarrito[0].id,
         productoId: producto.id,
+        cantidad
       });
-      return res.status(201).json({
-        message: "El producto fue Registrado en el carrito",
-        data: detalleCarrito,
-      });
+      return res.status(201).end();
     }
     return res
       .status(203)
@@ -39,7 +39,7 @@ async function carritoGet(req, res, next) {
   }
   try {
     const carrito = await Carrito.findOne({
-      include: [Usuario, CarritoDetalle],
+      include: [CarritoDetalle],
       where: { usuarioId },
     });
     if (carrito) {
