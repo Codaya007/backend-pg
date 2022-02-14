@@ -1,8 +1,4 @@
 // Exportamos una funcion que define el modelo
-
-const { types } = require("pg");
-
-// Luego le injectamos la conexion a sequelize.
 module.exports = (sequelize, DataTypes) => {
   // defino el modelo
   const Carrito = sequelize.define("Carrito", {
@@ -15,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
       sourceKey: "id",
       foreignKey: "usuarioId",
     });
+    // Relacionando con CarritoDetalle (productos)  (1:m)
     Carrito.hasMany(models.CarritoDetalle, {
       sourceKey: "id",
       foreignKey: "carritoId",
