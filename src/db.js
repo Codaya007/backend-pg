@@ -60,6 +60,7 @@ sequelize.models = models;
 const {
   Usuario,
   Categoria,
+  Subcategoria,
   LineaDePedido,
   Pedido,
   Producto,
@@ -72,6 +73,7 @@ const {
 module.exports = {
   Usuario,
   Categoria,
+  Subcategoria,
   LineaDePedido,
   Pedido,
   Producto,
