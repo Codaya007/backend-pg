@@ -57,7 +57,7 @@ Object.keys(models).forEach((modelName) => {
 
 sequelize.models = models;
 
-const { Usuario, Categoria, LineaDePedido, Pedido, Producto, Offers, Ofertas, OfertaProducto } =
+const { Usuario, Categoria, Subcategoria, LineaDePedido, Pedido, Producto, Offers, Ofertas, OfertaProducto } =
   sequelize.models;
 module.exports = {
   //...sequelize.models,
