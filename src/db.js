@@ -59,6 +59,7 @@ sequelize.models = models;
 
 const {
   Usuario,
+  Comentario,
   Categoria,
   Subcategoria,
   LineaDePedido,
