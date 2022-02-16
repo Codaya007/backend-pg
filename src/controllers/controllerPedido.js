@@ -1,5 +1,5 @@
 const { Pedido, LineaDePedido, Producto, Usuario } = require("../db");
-const { Op, UUID } = require('sequelize');
+const { Op } = require('sequelize');
 
 const mapPedido = async (el) => {
    el = el.toJSON();

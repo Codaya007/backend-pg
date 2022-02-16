@@ -8,6 +8,7 @@ const categoryRouter = require('./categoria.routes');
 const carritoRouter = require("./carrito.routes");
 const pagosRouter = require('./pagos.routes');
 const offersRouter = require('./oferta.routes');
+const comentariosRouter = require('./comentario.routes');
 
 const router = Router();
 
@@ -19,5 +20,6 @@ router.use('/categories', categoryRouter);
 router.use('/offers', offersRouter);
 router.use("/carritos", carritoRouter);
 router.use('/pagos', pagosRouter);
+router.use('/comments', comentariosRouter);
 
 module.exports = router;
