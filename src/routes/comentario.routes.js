@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { createComentario, getAllComentarios, getAllComentariosByProduct } = require("../controllers/controllerComentario");
+const { createComentario, getAllComentarios, getAllComentariosByProduct, updateComentario, deleteComentario } = require("../controllers/controllerComentario");
 const { authentication } = require("../middlewares");
 const { check, validationResult } = require('express-validator');
 
@@ -44,8 +44,41 @@ comentarioRouter.get("/:productoId", async (req, res, next) => {
 });
 
 
-// comentarioRouter.put("/:productoId", authentication);
+// @route PUT comments/:id
+// @desc Actualiza un comentario existente
+// @access Private
+comentarioRouter.put('/:id', [
+   check('descripcion', 'El campo "descripcion" es requerido y tiene un minimo de 10 caracteres y máximo 350').isString().trim().isLength({ min: 10, max: 350 }),
+], authentication, async (req, res, next) => {
+   // Validaciones de express-validator
+   const errors = validationResult(req);
 
-// comentarioRouter.delete("/:productoId", authentication);
+   if (!errors.isEmpty()) {
+      return next({ status: 400, errors });
+   }
+
+   // Si no hay errores, continúo
+   const { descripcion } = req.body;
+   const { id } = req.params;
+
+   let put = await updateComentario(id, descripcion);
+   if (put.error) return next(put.error);
+
+   res.json(put);
+})
+
+
+// @route DELETE comments/:id
+// @desc Elimina un comentario por id
+// @access Private Admin
+comentarioRouter.delete('/:id', authentication, async (req, res, next) => {
+   const { id } = req.params;
+
+   let destroy = await deleteComentario(id);
+   if (destroy) return next(destroy.error);
+
+   res.status(204).end();
+})
+
 
 module.exports = comentarioRouter;

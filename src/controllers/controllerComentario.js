@@ -4,23 +4,6 @@ const { Op } = require('sequelize');
 const createComentario = async (descripcion, usuarioId, productoId) => {
    try {
 
-      // let pedido = await Pedido.findOne({
-      //    where: {
-      //       [Op.and]: [
-      //          {
-      //             usuarioId
-      //          },
-      //          {
-      //             productoId
-      //          }
-      //       ]
-      //    }
-      // });
-
-      // if (!pedido) return { error: { status: 401, message: "No puede comentar un producto que no ha comprado" } };
-      // // Si si ha comprado el producto, ahora valido que no haya comentado ya el producto
-      // pedido = pedido.toJSON();
-
       let comentarioExists = await Comentario.findOne({
          where: {
             [Op.and]: [
@@ -65,22 +48,46 @@ const getAllComentariosByProduct = async (productoId) => {
    }
 }
 
-const getComentario = async () => {
 
+const updateComentario = async (id, descripcion) => {
+   try {
+      const comment = await Comentario.findByPk(id);
+      if (!comment) return { error: { status: 404, message: "Comentario no encontrado" } };
+
+      await Comentario.update(
+         {
+            descripcion
+         },
+         { where: { id } })
+      return "Success update";
+
+   } catch (error) {
+      console.log(error)
+      return { error: {} };
+   }
 }
 
-const updateComentario = async () => {
+const deleteComentario = async (id) => {
+   try {
+      let dest = await Comentario.findByPk(id);
 
-}
+      if (!dest) return { error: { status: 404, message: "Id no válido" } };
 
-const deleteComentario = async () => {
+      // console.log(id)
+      dest = await Comentario.destroy({
+         where: { id }
+      })
 
+      return;
+   } catch (error) {
+      console.log(error);
+      return { error: {} }
+   }
 }
 
 
 module.exports = {
    createComentario,
-   getComentario,
    getAllComentarios,
    updateComentario,
    deleteComentario,

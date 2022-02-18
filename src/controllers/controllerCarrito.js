@@ -17,15 +17,15 @@ async function carritoPost(req, res, next) {
 
     if (nuevoCarrito) {
       await CarritoDetalle.findOrCreate({
-        where:{
+        where: {
           productoId: producto.id,
           carritoId: nuevoCarrito[0].id,
           cantidad
-         },
-         defaults: { cantidad},
+        },
+        defaults: { cantidad },
       });
-     
-      
+
+
       return res.status(201).end();
     }
     return res
@@ -58,7 +58,49 @@ async function carritoGet(req, res, next) {
   }
 }
 
+
+const updateCarrito = async (id, descripcion) => {
+  try {
+    await Carrito.update(
+      {
+        descripcion
+      },
+      { where: { id } })
+    return "Success update";
+
+  } catch (error) {
+    console.log(error)
+    return { error: {} };
+  }
+}
+
+// Elimina todo el carrito y sus CarritoDetalle relacionados
+const deleteCarrito = async (usuarioId) => {
+  try {
+    const carrito = await Carrito.findOne({ where: { usuarioId } });
+
+    if (!carrito) {
+      return { error: { status: 404, message: "Carrito no encontrado" } };
+    }
+
+    carrito = carrito.toJSON();
+
+    // Elimino los productos -> CarritoDetalles
+    await CarritoDetalle.destroy({ where: { carritoId: carrito.id } });
+
+    // Elimino el carrito en sí
+    await Carrito.destroy({ where: { usuarioId } });
+    return;
+  } catch (error) {
+    console.log(error);
+    return { error: { status: 400, message: "No ha sido posible eliminar el carrito" } };
+  }
+}
+
+
 module.exports = {
   carritoPost,
   carritoGet,
+  updateCarrito,
+  deleteCarrito
 };
