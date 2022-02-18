@@ -18,6 +18,7 @@ module.exports = async (req, res, next) => {
       // Compruebo que efectivamente el usuario exista en la DDBB
       const user = await Usuario.findByPk(decoded.usuario.id);
       !user && next({ status: 400, message: "Invalid user" });
+      (user.rol === "3") && next({ status: 403, message: "Usuario bloqueado" });
 
       //Obtenemos el payload del token (usuario)
       req.usuario = decoded.usuario;

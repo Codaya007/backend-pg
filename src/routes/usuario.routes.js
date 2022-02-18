@@ -142,6 +142,9 @@ userRouter.post("/login", [
     // significa que el correo no es válido
     if (!user) return next({ status: 400, message: "Credenciales no validas" });
 
+    user = user.toJSON();
+    if (user.rol === "3") return next({ status: 403, message: "Usuario bloqueado" });
+
     // Teniedo el usuario, determinamos si la contraseña enviada es correcta
     const isMatch = await bcrypt.compare(contrasena, user.contrasena);
 
@@ -277,5 +280,36 @@ userRouter.put("/update", [
     return next({});
   }
 });
+
+
+// @route PUT user/block/:userId
+// @desc Bloquear un usuario
+// @access Private admin
+userRouter.put("/block/:userId", authentication, adminAuthentication, async (req, res, next) => {
+  try {
+    await Usuario.update({ rol: "3" }, { where: { id: req.params.userId } });
+
+    res.end();
+  } catch (error) {
+    cosole.log(error);
+    return next({ status: 500, message: "No se ha podido bloquear al usuario" });
+  }
+});
+
+
+// @route PUT user/unlock/:userId
+// @desc Desbloquear un usuario
+// @access Private admin
+userRouter.put("/unlock/:userId", authentication, adminAuthentication, async (req, res, next) => {
+  try {
+    await Usuario.update({ rol: "1" }, { where: { id: req.params.userId } });
+
+    res.end();
+  } catch (error) {
+    cosole.log(error);
+    return next({ status: 500, message: "No se ha podido desbloquear al usuario" });
+  }
+});
+
 
 module.exports = userRouter;
