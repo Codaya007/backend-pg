@@ -12,6 +12,7 @@ const userRouter = Router();
 const { Usuario } = require("../db");
 // Requerimos el middleware de autenticación
 const { authentication } = require("../middlewares");
+const adminAuthentication = require("../middlewares/adminAuthentication");
 
 // @route POST user/register
 // @desc Registrar Usuarios
@@ -190,6 +191,20 @@ userRouter.get("/", authentication, async (req, res, next) => {
   }
 });
 
+
+// @route GET api/user/all
+// @desc Me trae todos los usuarios
+// @access Private admin
+userRouter.get("/all", authentication, adminAuthentication, async (req, res, next) => {
+  try {
+    const users = await Usuario.findAll({ attributes: { exclude: ['contrasena'] } });
+
+    res.json(users);
+  } catch (error) {
+    console.log(error);
+    next({});
+  }
+});
 
 
 // @route PUT user/update/
