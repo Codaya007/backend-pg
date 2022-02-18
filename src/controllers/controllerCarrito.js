@@ -2,8 +2,7 @@ const { Carrito, Usuario, CarritoDetalle, Producto } = require("../db");
 
 async function carritoPost(req, res, next) {
   try {
-    const { productoId, cantidad } = req.body;
-    const { id: usuarioId } = req.usuario;
+    const { productoId, cantidad, usuarioId } = req.body;
 
     if (!usuarioId)
       return res.status(400).json({ message: "Los datos son requeridos" });
@@ -19,7 +18,7 @@ async function carritoPost(req, res, next) {
       await CarritoDetalle.create({
         carritoId: nuevoCarrito[0].id,
         productoId: producto.id,
-        cantidad
+        cantidad,
       });
       return res.status(201).end();
     }
@@ -43,7 +42,27 @@ async function carritoGet(req, res, next) {
       where: { usuarioId },
     });
     if (carrito) {
-      return res.status(200).json(carrito);
+      const pendingProduct = carrito.CarritoDetalles.map(async (detalle) => {
+        const producto = await Producto.findOne({
+          where: {
+            id: detalle.productoId,
+          },
+        });
+        return {
+          id: detalle.id,
+          cantidad: detalle.cantidad,
+          carritoId: detalle.carritoId,
+          producto,
+        };
+      });
+      const productoResult = await Promise.all(pendingProduct);
+      console.log(productoResult);
+      // const objetoCarrito = {
+      //   ...carrito,
+      //   CarritoDetalles: productoResult,
+      // };
+
+      return res.status(200).json(productoResult);
     } else {
       return next({ status: 404, message: "Carrito not founded" });
     }

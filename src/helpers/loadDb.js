@@ -7,9 +7,13 @@ const loadOfertas = require("./loadOfertas");
 async function LoadDb() {
   try {
     await loadCategorias();
+
     await loadUsuarios();
+
     await loadProductos();
+
     await loadPedidos();
+
     await loadOfertas();
   } catch (error) {
     console.log(error);
