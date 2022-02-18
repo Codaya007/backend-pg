@@ -16,11 +16,16 @@ async function carritoPost(req, res, next) {
     });
 
     if (nuevoCarrito) {
-      await CarritoDetalle.create({
-        carritoId: nuevoCarrito[0].id,
-        productoId: producto.id,
-        cantidad
+      await CarritoDetalle.findOrCreate({
+        where:{
+          productoId: producto.id,
+          carritoId: nuevoCarrito[0].id,
+          cantidad
+         },
+         defaults: { cantidad},
       });
+     
+      
       return res.status(201).end();
     }
     return res
