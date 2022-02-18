@@ -67,7 +67,7 @@ const {
   Producto,
   Carrito,
   CarritoDetalle,
-  Ofertas, 
+  Ofertas,
   OfertaProducto
 } = sequelize.models;
 
@@ -80,7 +80,8 @@ module.exports = {
   Producto,
   Carrito,
   CarritoDetalle,
-  Ofertas, 
+  Ofertas,
   OfertaProducto,
+  Comentario,
   conn: sequelize, // para importar la conexión { conn } = require('./db.js');
 };
