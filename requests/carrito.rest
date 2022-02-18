@@ -14,16 +14,36 @@ Content-Type: application/json
 ### guardo el token
 @tokenUno = {{usuarioUno.response.body.token}}
 
-### ya puedo crear un carrito //le envío ids de productos y si no hya me crearía un carrito
+### Creo un carrito enviando el token unicamente
 POST {{baseUrl}}/carritos HTTP/1.1
 x-auth-token: {{tokenUno}}
 Content-Type: application/json
 
-{
-   "productoId": 1,
-   "cantidad": 3
-}
-
 ### obtener el carrito de un usuario /carritos/:usuarioId
 GET {{baseUrl}}/carritos/5 HTTP/1.1
+x-auth-token: {{tokenUno}}
+
+###
+PUT {{baseUrl}}/carritos/add HTTP/1.1
+x-auth-token: {{tokenUno}}
+Content-Type: application/json
+
+{ 
+   "carritoId": 1, 
+   "productoId": 10, 
+   "cantidad": 50 
+}
+
+###
+PUT {{baseUrl}}/carritos/delete HTTP/1.1
+x-auth-token: {{tokenUno}}
+Content-Type: application/json
+
+{ 
+   "carritoId": 1, 
+   "productoId": 2
+}
+
+### Eliminamos el carrito de un usuario específico pasado por id
+DELETE {{baseUrl}}/carritos/5 HTTP/1.1
 x-auth-token: {{tokenUno}}
