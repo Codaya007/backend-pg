@@ -16,7 +16,7 @@ GET {{baseUrl}}/category/5 HTTP/1.1
 ###
 GET {{baseUrl}}/category/7 HTTP/1.1
 ###
-GET {{baseUrl}}/10 HTTP/1.1
+GET {{baseUrl}}/1 HTTP/1.1
 
 ### Posteando un nuevo producto
 ### Private Admin products/

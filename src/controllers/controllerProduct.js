@@ -180,11 +180,19 @@ async function updateRateProducto(req, res, next) {
 
     // console.log(producto);
 
+    let rateAll = (producto.count * producto.rate);
+    let newCount = producto.count + 1;
+    console.log(producto);
+    console.log("Sumatoria rates: " + rateAll)
+    console.log("Nuevo Count: " + newCount)
     // Actualizo el producto
     await Producto.update({
       // Para que solo tenga un decimal (cuando es la primera calificación no debe promediarse)
-      rate: parseFloat(producto.count) === 0 ? rate : Math.round(((rate + producto.rate) / 2) * 10) / 10,
-      count: producto.count + 1
+
+      rate: parseInt(producto.count) === 0 ?
+        rate :
+        Math.round(((rate + rateAll) / newCount) * 100) / 100,
+      count: newCount
     },
       { where: { id } });
 
