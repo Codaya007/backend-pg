@@ -24,6 +24,6 @@ router.use("/offers", offersRouter);
 router.use("/carritos", carritoRouter);
 router.use("/pagos", pagosRouter);
 router.use("/comments", comentariosRouter);
-router.use("/rPassword", forgotPasswordRouter);
+router.use("/password", forgotPasswordRouter);
 
 module.exports = router;
