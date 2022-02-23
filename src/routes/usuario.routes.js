@@ -22,11 +22,7 @@ userRouter.post("/register", [
   check('usuario', 'Incluya un "usuario" valido').isString().trim().not().isEmpty(),
   check('contrasena', 'Incluya una contraseña válida').isString().trim().not().isEmpty(),
   check('email', 'Incluya un email válido').isEmail().exists(),
-  check('pais', 'Incluya un país válido').isString().trim().not().isEmpty(),
-  check('provincia', 'Incluya una provincia válida').isString().trim().not().isEmpty(),
-  check('direccion', 'Incluya una direccion válida').isString().trim().not().isEmpty(),
-  check('telefono', 'El campo telefono es requerido').isString().not().isEmpty(),
-  check('telefono', 'Mínimo 8 caracteres').isLength({ min: 8 }),
+  
 ], async (req, res, next) => {
   // Validaciones de express-validator
   const errors = validationResult(req);
@@ -311,68 +307,6 @@ userRouter.put("/unlock/:userId", authentication, adminAuthentication, async (re
   }
 });
 
-// @route POST user/loginGoogle
-// @desc Logear un usuario
-// @access Public
-userRouter.post('/loginGoogle', async (req,res,next)=>{
-  const {
-    nombre,
-    usuario,
-    contrasena,
-    email,
-    pais,
-    provincia,
-    direccion,
-    telefono,
-    
-  } = req.body;
-
-  try {
-    let user = await Usuario.findOne({ where: { email } });
-
-    // Si el correo ya está registrado, devuelvo un error
-    if (user) {
-      return next({ status: 400, message: "Ya posee una cuenta registrada" });
-    }
-
-    const avatar = gravatar.url(email, {
-      s: "200", //size
-      r: "pg", //rate
-      d: "mm",
-    });
-
-    // Creamos el usuario
-    user = {
-      nombre,
-      usuario,
-      contrasena,
-      email,
-      pais,
-      provincia,
-      direccion,
-      telefono,
-      avatar,
-      rol: 1,
-    };
-
-    // Encriptamos la contraseña (complejidad 10)
-    user.contrasena = await bcrypt.hash(contrasena, 10);
-
-    // Creamos el nuevo usuario y lo guardamos en la DB
-    try {
-      user = await Usuario.create(user);
-
-      res.status(200).send('usuario creado')
-      console.log(user.toJSON());
-    } catch (error) {
-      // no se ha podido crear el usuario
-      console.log(error);
-    }
-  } catch(err) {
-    console.log(err);
-    return next({})
-  }
-})
 
 
 module.exports = userRouter;

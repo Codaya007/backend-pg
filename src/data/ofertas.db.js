@@ -10,8 +10,8 @@ module.exports = [
       ]
    },
    {
-      "titulo": "Navidad",
-      "descripcion": "En esta navidad regala tecnología!",
+      "titulo": "Black Friday",
+      "descripcion": "En este black friday no pierdas la oportunidad y compra eso que te gusta al mejor precio!",
       "porcentajeDescuento": 10,
       "productos": [
          { "id": 2, "cantidad": 8 },
@@ -22,8 +22,8 @@ module.exports = [
       ]
    },
    {
-      "titulo": "Fin de año",
-      "descripcion": "Acaba este año con los productos más modernos",
+      "titulo": "Mes del carnaval",
+      "descripcion": "Acaba este mes con todo y llevate los productos más modernos al mejor precio",
       "porcentajeDescuento": 15,
       "productos": [
          { "id": 1, "cantidad": 8 },
