@@ -22,11 +22,7 @@ userRouter.post("/register", [
   check('usuario', 'Incluya un "usuario" valido').isString().trim().not().isEmpty(),
   check('contrasena', 'Incluya una contraseña válida').isString().trim().not().isEmpty(),
   check('email', 'Incluya un email válido').isEmail().exists(),
-  check('pais', 'Incluya un país válido').isString().trim().not().isEmpty(),
-  check('provincia', 'Incluya una provincia válida').isString().trim().not().isEmpty(),
-  check('direccion', 'Incluya una direccion válida').isString().trim().not().isEmpty(),
-  check('telefono', 'El campo telefono es requerido').isString().not().isEmpty(),
-  check('telefono', 'Mínimo 8 caracteres').isLength({ min: 8 }),
+  
 ], async (req, res, next) => {
   // Validaciones de express-validator
   const errors = validationResult(req);
@@ -310,6 +306,7 @@ userRouter.put("/unlock/:userId", authentication, adminAuthentication, async (re
     return next({ status: 500, message: "No se ha podido desbloquear al usuario" });
   }
 });
+
 
 
 module.exports = userRouter;
