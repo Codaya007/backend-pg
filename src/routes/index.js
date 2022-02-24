@@ -11,6 +11,7 @@ const pagosRouter = require("./pagos.routes");
 const offersRouter = require("./oferta.routes");
 const comentariosRouter = require("./comentario.routes");
 const forgotPasswordRouter = require("./forgotPassword.routes");
+const resetPasswordRouter = require("./resetPassword.routes");
 
 const router = Router();
 
@@ -25,5 +26,6 @@ router.use("/carritos", carritoRouter);
 router.use("/pagos", pagosRouter);
 router.use("/comments", comentariosRouter);
 router.use("/password", forgotPasswordRouter);
+router.use("/resetPassword", resetPasswordRouter);
 
 module.exports = router;

@@ -20,7 +20,9 @@ const forgotPassword = async (req, res, next) => {
 
     const token = jwt.sign(
       {
-        id: user.id,
+        usuario: {
+          id: user.id,
+        },
       },
       JWT_SECRET,
       { expiresIn: "1h" }
@@ -28,6 +30,7 @@ const forgotPassword = async (req, res, next) => {
     //user.update({
     //tokenResetPassword: token,
     //});
+
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -36,22 +39,24 @@ const forgotPassword = async (req, res, next) => {
       },
     });
     // const emailPort = process.env.EMAIL_PORT || 3000;
+
     const mailOptions = {
       from: `${EMAIL_ADDRESS}`,
       to: `${user.email}`,
       subject: "Enlace para recuperar su contraseña ",
-      text: `http://localhost:3000/resetpassword/ ${user.id}/${token} `,
+      text: `https://ecommerce-pg-henry.herokuapp.com/resetpassword/${user.id}/${token} `,
     };
+
     transporter.sendMail(mailOptions, (err, response) => {
       if (err) {
         console.error("Ha ocurrido un error :", err);
-        res.status(200).json("El email para la recuperacion ha sido enviado");
       }
+      res.status(200).json("El email para la recuperacion ha sido enviado");
     });
   } catch (error) {
-    res.status(500).send({
+    res.status(500).json({
       message: "Ha ocurrido un error",
-      err,
+      error,
     });
   }
 };
