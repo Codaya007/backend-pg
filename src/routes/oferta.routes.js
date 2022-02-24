@@ -10,31 +10,46 @@ const { ACTIVA, INACTIVA } = require('../data/constantes');
 
 
 offersRouter.get('/', async (req, res, next) => {
-     let result = await getAllOfertas();
+     try {
+          let result = await getAllOfertas();
 
-     if (result.error) return next(result.error);
+          if (result.error) return next(result.error);
 
-     res.send(result);
+          res.send(result);
+     } catch (err) {
+          console.log(err);
+          res.status(500).end();
+     }
 })
 
 
 offersRouter.get('/active', async (req, res, next) => {
-     let result = await getOfertasActivas();
+     try {
+          let result = await getOfertasActivas();
 
-     if (result.error) return next(result.error);
+          if (result.error) return next(result.error);
 
-     res.send(result);
+          res.send(result);
+     } catch (err) {
+          console.log(err);
+          res.status(500).end();
+     }
 })
 
 
 offersRouter.get('/:id', async (req, res, next) => {
-     const { id } = req.params;
+     try {
+          const { id } = req.params;
 
-     const result = await getOfertaById(id);
+          const result = await getOfertaById(id);
 
-     if (result.error) return next(result.error);
+          if (result.error) return next(result.error);
 
-     res.send(result);
+          res.send(result);
+     } catch (err) {
+          console.log(err);
+          res.status(500).end();
+     }
 })
 
 
@@ -59,13 +74,18 @@ offersRouter.post('/', [
      }
 
      // Si no hay errores, continúo
-     const { titulo, descripcion, porcentajeDescuento, productos } = req.body;
+     try {
+          const { titulo, descripcion, porcentajeDescuento, productos } = req.body;
 
-     let result = await createOferta(titulo, descripcion, porcentajeDescuento, productos);
+          let result = await createOferta(titulo, descripcion, porcentajeDescuento, productos);
 
-     if (result.error) return next(result.error);
+          if (result.error) return next(result.error);
 
-     res.json(result);
+          res.json(result);
+     } catch (err) {
+          console.log(err);
+          res.status(500).end();
+     }
 })
 
 
@@ -94,21 +114,26 @@ offersRouter.put('/:id', [
      }
 
      // Si no hay errores, continúo
-     const { titulo, descripcion, porcentajeDescuento, estado, productos } = req.body;
-     const { id } = req.params;
+     try {
+          const { titulo, descripcion, porcentajeDescuento, estado, productos } = req.body;
+          const { id } = req.params;
 
-     let result = await updateOferta(
-          id,
-          titulo,
-          descripcion,
-          porcentajeDescuento,
-          estado,
-          productos
-     );
+          let result = await updateOferta(
+               id,
+               titulo,
+               descripcion,
+               porcentajeDescuento,
+               estado,
+               productos
+          );
 
-     if (result.error) return next(result.error);
+          if (result.error) return next(result.error);
 
-     res.json(result);
+          res.json(result);
+     } catch (err) {
+          console.log(err);
+          res.status(500).end();
+     }
 })
 
 
@@ -125,14 +150,19 @@ offersRouter.put('/add/:ofertaId', [
      }
 
      // Si no hay errores, continúo
-     const { producto } = req.body;
-     const { ofertaId } = req.params;
+     try {
+          const { producto } = req.body;
+          const { ofertaId } = req.params;
 
-     let result = await addProducto(ofertaId, producto);
+          let result = await addProducto(ofertaId, producto);
 
-     if (result.error) return next(result.error);
+          if (result.error) return next(result.error);
 
-     res.json(result);
+          res.json(result);
+     } catch (err) {
+          console.log(err);
+          res.status(500).end();
+     }
 })
 
 
@@ -147,29 +177,36 @@ offersRouter.put('/remove/:ofertaId', [
      }
 
      // Si no hay errores, continúo
-     const { productoId } = req.body;
-     const { ofertaId } = req.params;
+     try {
+          const { productoId } = req.body;
+          const { ofertaId } = req.params;
 
-     let destroy = await removeProducto(ofertaId, productoId);
+          let destroy = await removeProducto(ofertaId, productoId);
 
-     if (destroy) return next(destroy.error);
+          if (destroy) return next(destroy.error);
 
-     res.status(204).end();
+          res.status(204).end();
+     } catch (err) {
+          console.log(err);
+          res.status(500).end();
+     }
 })
 
 
 offersRouter.delete('/:id', authentication, adminAuthentication, async (req, res, next) => {
-     const { id } = req.params;
+     try {
+          const { id } = req.params;
 
-     let destroy = await deleteOferta(id);
+          let destroy = await deleteOferta(id);
 
-     if (destroy) return next(destroy.error);
+          if (destroy) return next(destroy.error);
 
-     res.status(204).end();
+          res.status(204).end();
+     } catch (err) {
+          console.log(err);
+          res.status(500).end();
+     }
 })
-
-
-
 
 
 module.exports = offersRouter
