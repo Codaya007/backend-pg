@@ -44,7 +44,7 @@ const forgotPassword = async (req, res, next) => {
       from: `${EMAIL_ADDRESS}`,
       to: `${user.email}`,
       subject: "Enlace para recuperar su contraseña ",
-      text: `http://localhost:3000/resetpassword/${user.id}/${token} `,
+      text: `https://ecommerce-pg-henry.herokuapp.com/resetpassword/${user.id}/${token} `,
     };
 
     transporter.sendMail(mailOptions, (err, response) => {
