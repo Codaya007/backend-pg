@@ -137,7 +137,7 @@ offersRouter.put('/add/:ofertaId', [
 
 
 offersRouter.put('/remove/:ofertaId', [
-     check('productoId', 'El campo productoId es un valor numérico requerido').trim().not().isEmpty().isInt({ min: 0 }),
+     check('productoId', 'El campo productoId es un valor numérico requerido').trim().not().isEmpty().isInt({ min: 1 }),
 ], authentication, adminAuthentication, async (req, res, next) => {
      // Validaciones de express-validator
      const errors = validationResult(req);
@@ -158,7 +158,7 @@ offersRouter.put('/remove/:ofertaId', [
 })
 
 
-offersRouter.delete('/:id', authentication, adminAuthentication, async (req, res) => {
+offersRouter.delete('/:id', authentication, adminAuthentication, async (req, res, next) => {
      const { id } = req.params;
 
      let destroy = await deleteOferta(id);
