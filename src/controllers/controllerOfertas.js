@@ -98,11 +98,6 @@ const createOferta = async (titulo, descripcion, porcentajeDescuento, productos)
 
 const updateOferta = async (id, titulo, descripcion, porcentajeDescuento, estado, productos) => {
   try {
-
-    let oferta = await Ofertas.findOne({ where: { titulo } });
-
-    if (oferta) return { error: { status: 400, message: "Ya existe una oferta con ese nombre" } };
-
     let updated = await Ofertas.update(
       {
         titulo,
